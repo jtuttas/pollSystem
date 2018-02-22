@@ -1,0 +1,17 @@
+db.fragen.insertMany(
+ [
+     {
+         _id: "Frage1",
+         text: "Wie findest Du die Schule?"
+     },
+     {
+         _id: "Frage2",
+         text: "Wie findest Du den Unterricht?"
+     },
+     {
+         _id: "Frage3",
+         text: "Wie findest Du den Lehrer?"
+     }
+ ])
+
+

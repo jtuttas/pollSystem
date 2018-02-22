@@ -1,0 +1,7 @@
+{
+    "rest-client.environmentVariables": {
+        "local": {
+            "host": "127.0.0.1",
+        },
+    }
+}
