@@ -13,9 +13,13 @@ npm start
 ```
 Der Server läuft standradmäßig auf Port 3000, über http://localhost:3000 kann abgefragt werden ob der Server ordnungsgemäß läuft.
 ## Client
-Der Client ist eine Angualr CLI Anwendung und kann wie folgt gestartet werden.
+Auch hier müssen zunächst die notwendigen Module geladen werden.
 ```
 cd Client
+npm install
+```
+Der Client ist eine Angualr CLI Anwendung und kann wie folgt gestartet werden.
+```
 ng serve
 ```
 Anschließend kann der Client aufgerufen werden via http://localhost:4200

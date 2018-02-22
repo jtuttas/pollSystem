@@ -32,7 +32,7 @@ router.get('/quest/:id', function (req, res, next) {
     res.sendStatus(403);
     return;
   }
-  
+
   res.setHeader('Content-Type', 'application/json');
   returnObj = {
     success: false,
@@ -82,9 +82,9 @@ router.post('/quest/', function (req, res) {
   }
   if (!req.body.antworten) {
     console.log("antworten missing");
-    var antworten=[];
-    req.body.antworten=antworten;
-    console.log("Body ist nun "+JSON.stringify(req.body));
+    var antworten = [];
+    req.body.antworten = antworten;
+    console.log("Body ist nun " + JSON.stringify(req.body));
   }
 
 
@@ -142,35 +142,35 @@ router.put('/quest/', function (req, res) {
     success: false,
     msg: "No message"
   }
-  console.log("Prüfe ob Datensatz _id="+req.body._id+" einen Eintrag in antworten hat mit Frage ("+req.body.question+")");
-  dbo.collection(collectionName).find({antworten: { $elemMatch: { question: req.body.question} },_id:req.body._id}).toArray(function (err, result) {
+  console.log("Prüfe ob Datensatz _id=" + req.body._id + " einen Eintrag in antworten hat mit Frage (" + req.body.question + ")");
+  dbo.collection(collectionName).find({ antworten: { $elemMatch: { question: req.body.question } }, _id: req.body._id }).toArray(function (err, result) {
     if (err) {
       console.log("Recieve Error:" + err);
     }
     else {
       console.log("Abfrage ergab Daten: " + JSON.stringify(result));
-      if (result && result.length>0 && 'antworten' in result[0]) {
+      if (result && result.length > 0 && 'antworten' in result[0]) {
         console.log("Frage existiert, also update");
-        dbo.collection(collectionName).updateOne(  { _id: req.body._id,"antworten.question": req.body.question },
+        dbo.collection(collectionName).updateOne({ _id: req.body._id, "antworten.question": req.body.question },
           {
             $set: { "antworten.$.answer": req.body.answer }
-            
+
           }
-        , function (err, result) {
-          if (err) {
-            console.log("Recieve Error:" + err);
-            returnObj.msg = "Update failed " + err;
-            res.send(JSON.stringify(returnObj));
-            return;
-          }
-          else {
-            console.log("1 Datensatz aktualisiet");
-            returnObj.success = true;
-            returnObj.msg = " Update Data Sucessfull";
-            res.send(JSON.stringify(returnObj));
-            return;
-          }
-        });
+          , function (err, result) {
+            if (err) {
+              console.log("Recieve Error:" + err);
+              returnObj.msg = "Update failed " + err;
+              res.send(JSON.stringify(returnObj));
+              return;
+            }
+            else {
+              console.log("1 Datensatz aktualisiet");
+              returnObj.success = true;
+              returnObj.msg = " Update Data Sucessfull";
+              res.send(JSON.stringify(returnObj));
+              return;
+            }
+          });
       }
       else {
         console.log("Frage existiert nicht also anfügen an " + req.body._id);
@@ -190,15 +190,15 @@ router.put('/quest/', function (req, res) {
             }
             else {
               console.log("1 Datensatz angefügt result=" + result);
-              rObj=JSON.parse(result);
-              if (rObj.nModified==0) {
+              rObj = JSON.parse(result);
+              if (rObj.nModified == 0) {
                 returnObj.success = false;
-                returnObj.msg = " No Data was append " + result;                
+                returnObj.msg = " No Data was append " + result;
 
               }
               else {
                 returnObj.success = true;
-                returnObj.msg = " Append Data Sucessfull " + result;                
+                returnObj.msg = " Append Data Sucessfull " + result;
               }
               res.send(JSON.stringify(returnObj));
               return;
@@ -216,7 +216,7 @@ router.put('/quest/', function (req, res) {
  * Alle Klassen einer Umfrage abfragen
  */
 router.get('/courses/:poll', function (req, res, next) {
-  console.log('GET Courses from poll '+req.params.poll);
+  console.log('GET Courses from poll ' + req.params.poll);
   console.log("Header Secret:" + req.header("secret"));
 
   res.setHeader('Content-Type', 'application/json');
@@ -225,12 +225,12 @@ router.get('/courses/:poll', function (req, res, next) {
     return;
   }
 
-  dbo.collection(collectionName).distinct("course",{poll: req.params.poll},function (err, result) {
+  dbo.collection(collectionName).distinct("course", { poll: req.params.poll }, function (err, result) {
     if (err) {
       console.log("Recieve Error:" + err);
     }
     else {
-      console.log("Get Courses returns "+JSON.stringify(result));
+      console.log("Get Courses returns " + JSON.stringify(result));
       res.send(JSON.stringify(result));
     }
   })
@@ -249,12 +249,12 @@ router.get('/polls', function (req, res, next) {
     return;
   }
 
-  dbo.collection(collectionName).distinct("poll",function (err, result) {
+  dbo.collection(collectionName).distinct("poll", function (err, result) {
     if (err) {
       console.log("Recieve Error:" + err);
     }
     else {
-      console.log("Get Courses returns "+JSON.stringify(result));
+      console.log("Get Courses returns " + JSON.stringify(result));
       res.send(JSON.stringify(result));
     }
   })
@@ -278,11 +278,50 @@ router.get('/questions', function (req, res, next) {
       console.log("Recieve Error:" + err);
     }
     else {
-      console.log("Get questions returns "+JSON.stringify(result));
+      console.log("Get questions returns " + JSON.stringify(result));
       res.send(JSON.stringify(result));
     }
   })
 })
 
+/**
+ * Umfrage auswerten 
+ */
+router.get('/evaluate/:poll/:course', function (req, res, next) {
+  console.log('GET Evaluate for poll ' + req.params.poll + " with pattern " + req.params.course);
+  console.log("Header Secret:" + req.header("secret"));
+
+  res.setHeader('Content-Type', 'application/json');
+  if (req.header("secret") != "1234") {
+    res.sendStatus(403);
+    return;
+  }
+
+
+  /**
+   * db.antworten.aggregate([
+    {$match: {"course":/FI/}},
+    {$unwind: "$antworten"},
+    {$group: {_id: "$antworten",count:{$sum:1}}},
+    {$sort: {_id: 1}}   
+    ])
+   */
+  dbo.collection(collectionName).aggregate(
+    [
+      { $match: { "course": {$regex:req.params.course},"poll": {$regex:req.params.poll} }},
+      { $unwind: "$antworten" },
+      { $group: { _id: "$antworten", count: { $sum: 1 } } },
+      { $sort: { _id: 1 } }
+    ]
+  ).toArray(function (err, result) {
+    if (err) {
+      console.log("Recieve Error:" + err);
+    }
+    else {
+      //console.log("Get evaluation returns "+JSON.stringify(result));
+      res.send(JSON.stringify(result));
+    }
+  })
+})
 
 module.exports = router;
