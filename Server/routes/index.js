@@ -5,19 +5,29 @@ var dbname = "umfrage"
 var collectionName = "antworten"
 var url = "mongodb://localhost:27017/";
 var dbo;
+var questionlist;
 
 // Connect to the db
 MongoClient.connect(url, function (err, db) {
   if (!err) {
     console.log("We are connected to " + url);
     dbo = db.db(dbname);
+    dbo.collection("fragen").find().toArray(function (err, result) {
+      if (err) {
+        console.log("Recieve Error:" + err);
+      }
+      else {
+        console.log("Get questions returns " + JSON.stringify(result));
+        questionlist=result;
+      }
+    })
   }
 });
 
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Umfrageserver is running' });
+  res.render('index', { title: 'Umfrageserver is running..! Number of Questions:'+questionlist.length });
 });
 
 /**
@@ -273,15 +283,8 @@ router.get('/questions', function (req, res, next) {
     return;
   }
 
-  dbo.collection("fragen").find().toArray(function (err, result) {
-    if (err) {
-      console.log("Recieve Error:" + err);
-    }
-    else {
-      console.log("Get questions returns " + JSON.stringify(result));
-      res.send(JSON.stringify(result));
-    }
-  })
+  res.send(JSON.stringify(questionlist));
+ 
 })
 
 /**
@@ -318,10 +321,35 @@ router.get('/evaluate/:poll/:course', function (req, res, next) {
       console.log("Recieve Error:" + err);
     }
     else {
-      //console.log("Get evaluation returns "+JSON.stringify(result));
-      res.send(JSON.stringify(result));
+      questionlist.forEach(element => {
+       element.evaluation=[]; 
+      });
+      r = joinResults(result,questionlist);
+      res.send(JSON.stringify(r));
     }
   })
 })
+
+
+function joinResults(resultlist,qList) {
+  resultlist.forEach(element => {
+    console.log('---- Suche Frage '+element._id.question);
+    found=qList.filter(function(question){ return question._id === element._id.question}); 
+    console.log('found '+JSON.stringify(found));
+    if (found) {
+      if (!found[0].evaluation) {             
+        found[0]['evaluation'] = [];
+        console.log('Attribut Evaluation angehangen'+JSON.stringify(found));
+      }
+      obj={
+        item:element._id.answer,
+        count:element.count
+      }
+      found[0].evaluation.push(obj);
+      console.log('found ist nun '+JSON.stringify(found));
+    }
+  });
+  return qList;
+}
 
 module.exports = router;
