@@ -51,7 +51,7 @@ router.get('/quest/:id', function (req, res, next) {
   var query = { _id: req.params.id };
   dbo.collection(collectionName).find(query).toArray(function (err, result) {
     if (err) {
-      console.log("Recieve Error:" + err);
+      console.log("Recieve Error:!" + err);
       returnObj.msg = "GET failed " + err;
       res.send(JSON.stringify(returnObj));
     }
@@ -336,7 +336,7 @@ function joinResults(resultlist,qList) {
     console.log('---- Suche Frage '+element._id.question);
     found=qList.filter(function(question){ return question._id === element._id.question}); 
     console.log('found '+JSON.stringify(found));
-    if (found) {
+    if (found.length!=0) {
       if (!found[0].evaluation) {             
         found[0]['evaluation'] = [];
         console.log('Attribut Evaluation angehangen'+JSON.stringify(found));
