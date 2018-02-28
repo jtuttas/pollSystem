@@ -282,9 +282,9 @@ function New-Poll {
 
 <#
 .SYNOPSIS
-    Einladen von Benutzer 
+    Erzeugen von Benutzer 
 .DESCRIPTION
-    Einladen von Benutzern zur Umfrage. Die Ausgabe es CMDlets ist die Ursprüngliche EMail erweitert um
+    Erzeugen von Benutzern zur Umfrage. Die Ausgabe es CMDlets ist die Ursprüngliche EMail erweitert um
     einen erzeugten KEY über diesen KEY kann der Benutzer auf die Umfrage zugreifen. Dabei werden die 
     Ergebnisse des Teilnehmer in der Datenbank R{Polltype} gespeichert-
 .EXAMPLE
@@ -348,32 +348,38 @@ function New-Subscriber {
     
     begin {
         Connect-Mdbc -ConnectionString $mongoDB -DatabaseName $Databasename -CollectionName "R$Polltype"
-        $teilnehmerListe = @{}
     }    
     process {
+        $teilnehmer = "" | Select-Object -Property "id", "email", "course", "poll", "polltype"        
         $id = genId;
+        $teilnehmer.id = $id
+        $teilnehmer.polltype = $Polltype
         #Write-Host "Parameterset Name= $($PsCmdlet.ParameterSetName)"
         if ($data.EMail) {
             Write-Verbose "Trage neuen Teilnehmer mit der _id=$id in die Collection R$Polltype ein f. den Course=$($data.Course)!"
             @{_id = "$id"; course = $data.Course; poll = $Poll} | Add-MdbcData
-            $teilnehmerListe[$id] = $data.EMail                        
+            $teilnehmer.email = $data.EMail
+            $teilnehmer.course = $data.Course
+            $teilnehmer.poll = $Poll
         }
         else {
             if ($Email) {
                 Write-Verbose "Trage neuen Teilnehmer mit der _id=$id in die Collection R$Polltype ein f. den Course=$Course"
                 @{_id = "$id"; course = $Course; poll = $Poll} | Add-MdbcData
-                $teilnehmerListe[$id] = $Email
+                $teilnehmer.email = $EMail
+                $teilnehmer.course = $Course
+                $teilnehmer.poll = $Poll
             }
             else {
                 Write-Verbose "Trage neuen Teilnehmer mit der _id=$id in die Collection R$Polltype ein f. den Course=$Course."
                 @{_id = "$id"; course = $Course; poll = $Poll} | Add-MdbcData
-                $teilnehmerListe[$id] = $data
+                $teilnehmer.email = $data
+                $teilnehmer.course = $Course
+                $teilnehmer.poll = $Poll
+    
             }
         }
-    }
-    
-    end {
-        $teilnehmerListe
+        $teilnehmer
     }
 }
 
@@ -388,4 +394,128 @@ function genId () {
         $s += [char]$r 
     }
     return $s
+}
+
+<#
+.SYNOPSIS
+    EMail an die  Teilnehmer schicken
+.DESCRIPTION
+    Sendet eine Einladungsemail an die Teilnehmer. Der Text und der Betreff der EMail wird dabei in der Weise verändert, dass {id} ersetzt wird durch die Teilnehmer ID
+    und {poll} ersetzt wird durch die Umfrage.
+
+    Für die Pipelin wird folgendes Object (erzeugt von New-Subscriber) verwendet:
+
+    id       : wk43htBdY4ZetJ5tbFPf
+    email    : test2@test.de
+    course   : FIAE17J
+    poll     : Schülerumfrage SJ1718
+    polltype : bho
+
+.EXAMPLE
+    Invite-Subscriber -Text "Hallo <b>Test</b>" -Email test@test.de -ID 1234 -Sender Tuttas@mmbbs.de -SMTPServer smtp.test.de -SMTPUser user -SMTPkennwort geheim
+    Sendet eine EMail über den SMTP Server mit den angegebenen Text an test@test.de
+.EXAMPLE
+    "test1@test.de","test2@test.de" | New-Subscriber -Course FIAE17J -Poll "Schülerumfrage SJ1718" -Polltype bho  | Invite-Subscriber -Text (get-Content email.txt -Encoding UTF8) Subject "Einladung zur Umfrage {poll}" -Sender Tuttas@mmbbs.de SMTPServer smtp.test.de -SMTPUser user -SMTPkennwort geheim
+    Erzeugt über New-Subscriber neue Teilnehmer und schickt Ihne die EMail mit dem Inhalt aus email.txt.
+#>
+function Invite-Subscriber {
+    [CmdletBinding()]
+    Param (
+        # Email Adresse des Teilnehmers
+        [Parameter(Mandatory = $true,
+            Position = 0,
+            ValueFromPipelineByPropertyName = $true
+            )]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        $EMail,
+        
+        # HTML Text der EMail
+        [Parameter(Mandatory = $true,
+            Position = 1)]
+        [Object[]]$Text,
+
+        # ID des Teilnehmers
+        [Parameter(Mandatory = $true,
+            Position = 2,
+            ValueFromPipelineByPropertyName = $true
+            )]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        $ID,
+
+        # Umfrage
+        [Parameter(Mandatory = $true,
+            Position = 3,
+            ValueFromPipelineByPropertyName = $true
+            )]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [String]$Poll,
+    
+    
+        # SMTP Server Adresse
+        [Parameter(Mandatory = $true,
+            Position = 4)]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        $SMTPServer,
+
+        # SMTP User
+        [Parameter(Mandatory = $true,
+            Position = 5)]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        $SMTPUser,
+
+        # SMTP User Password
+        [Parameter(Mandatory = $true,
+            Position = 6)]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        $SMTPPassword,
+
+
+        # Absenderadresse der EMail
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        $Sender = "tuttas@mmbbs.de",
+
+        # Betreff der EMail
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [String]$Subject = "Einladung zur {poll}",
+
+        # Ist der Paramter Whatif gesetzt wird die EMail an diesen Teilnehmer gesendet
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        $whatif        
+    )
+    
+    begin {
+        $pwd = $SMTPPassword | ConvertTo-SecureString -AsPlainText -Force
+        $credentials = New-Object System.Management.Automation.PSCredential -ArgumentList $SMTPUser, $pwd
+        $utf8 = New-Object System.Text.utf8encoding
+        $server = $SMTPServer.Split(":");
+    }    
+    process {
+        $currSubject = $Subject.Replace("{id}", $ID);
+        $currSubject = $currSubject.Replace("{poll}", $Poll);
+
+        $currBody = "";
+        $Text | ForEach-Object {
+            $currLine = $_.Replace("{id}", $ID);
+            $currLine = $currLine.Replace("{poll}", $Poll);
+            $currBody += $currLine + "</br>";
+        }
+        #Write-Host $currBody
+        if ($whatif) {
+            Send-MailMessage -BodyAsHtml $currBody -Encoding $utf8 -From $Sender -SmtpServer $server[0] -Credential $credentials -Subject $currSubject -To $Whatif -UseSsl -Port $server[1]
+            Write-Verbose "Invite $whatif to poll $Poll"
+        }
+        else {
+            Send-MailMessage -BodyAsHtml $currBody -Encoding $utf8 -From $Sender -SmtpServer $server[0] -Credential $credentials -Subject $currSubject -To $EMail -UseSsl -Port $server[1]
+            Write-Verbose "Invite $EMail to poll $Poll"
+        }
+    }
 }
