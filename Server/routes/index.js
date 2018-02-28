@@ -5,36 +5,26 @@ var dbname = "umfrage"
 var collectionName = "antworten"
 var url = "mongodb://localhost:27017/";
 var dbo;
-var questionlist;
 
 // Connect to the db
 MongoClient.connect(url, function (err, db) {
   if (!err) {
     console.log("We are connected to " + url);
     dbo = db.db(dbname);
-    dbo.collection("fragen").find().toArray(function (err, result) {
-      if (err) {
-        console.log("Recieve Error:" + err);
-      }
-      else {
-        console.log("Get questions returns " + JSON.stringify(result));
-        questionlist=result;
-      }
-    })
   }
 });
 
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Umfrageserver is running..! Number of Questions:'+questionlist.length });
+  res.render('index', { title: 'Umfrageserver V1.0 is running..!'});
 });
 
 /**
  * Bisherige ANtworten des Teilnehmers abfragen
  */
-router.get('/quest/:id', function (req, res, next) {
-  console.log('GET Quest empfangen ID=' + req.params.id);
+router.get('/quest/:polltype/:id', function (req, res, next) {
+  console.log('GET Quest empfangen ID=' + req.params.id+ "  Polltype="+req.params.polltype);
   console.log("Header Secret:" + req.header("secret"));
 
   res.setHeader('Content-Type', 'application/json');
@@ -49,7 +39,7 @@ router.get('/quest/:id', function (req, res, next) {
     msg: "No message"
   }
   var query = { _id: req.params.id };
-  dbo.collection(collectionName).find(query).toArray(function (err, result) {
+  dbo.collection("R"+req.params.polltype).find(query).toArray(function (err, result) {
     if (err) {
       console.log("Recieve Error:!" + err);
       returnObj.msg = "GET failed " + err;
@@ -66,8 +56,9 @@ router.get('/quest/:id', function (req, res, next) {
 /**
  * Neuen Teilnehmer eintragen
  */
-router.post('/quest/', function (req, res) {
+router.post('/quest/:polltype', function (req, res) {
   console.log("POST quest Empfangen mit BODY=" + JSON.stringify(req.body));
+  console.log('Polltype ist '+req.params.polltype);
   console.log("Header Secret:" + req.header("secret"));
 
   res.setHeader('Content-Type', 'application/json');
@@ -103,7 +94,7 @@ router.post('/quest/', function (req, res) {
     success: false,
     msg: "No message"
   }
-  dbo.collection(collectionName).insertOne(req.body, function (err, dbres) {
+  dbo.collection("R"+req.params.polltype).insertOne(req.body, function (err, dbres) {
     if (err) {
       console.log("Recieve Error:" + err);
       returnObj.msg = "Insert failed " + err;
@@ -122,8 +113,8 @@ router.post('/quest/', function (req, res) {
 /**
  * Frage aktualisieren bzw. (wenn nicht existiert einfügen)
  */
-router.put('/quest/', function (req, res) {
-  console.log("PUT Empfangen mit BODY=" + JSON.stringify(req.body));
+router.put('/quest/:polltype', function (req, res) {
+  console.log("PUT Empfangen mit BODY=" + JSON.stringify(req.body))+ " Polltype="+req.params.polltype;
   console.log("Header Secret:" + req.header("secret"));
 
   res.setHeader('Content-Type', 'application/json');
@@ -153,7 +144,7 @@ router.put('/quest/', function (req, res) {
     msg: "No message"
   }
   console.log("Prüfe ob Datensatz _id=" + req.body._id + " einen Eintrag in antworten hat mit Frage (" + req.body.question + ")");
-  dbo.collection(collectionName).find({ antworten: { $elemMatch: { question: req.body.question } }, _id: req.body._id }).toArray(function (err, result) {
+  dbo.collection("R"+req.params.polltype).find({ antworten: { $elemMatch: { question: req.body.question } }, _id: req.body._id }).toArray(function (err, result) {
     if (err) {
       console.log("Recieve Error:" + err);
     }
@@ -161,7 +152,7 @@ router.put('/quest/', function (req, res) {
       console.log("Abfrage ergab Daten: " + JSON.stringify(result));
       if (result && result.length > 0 && 'antworten' in result[0]) {
         console.log("Frage existiert, also update");
-        dbo.collection(collectionName).updateOne({ _id: req.body._id, "antworten.question": req.body.question },
+        dbo.collection("R"+req.params.polltype).updateOne({ _id: req.body._id, "antworten.question": req.body.question },
           {
             $set: { "antworten.$.answer": req.body.answer }
 
@@ -184,7 +175,7 @@ router.put('/quest/', function (req, res) {
       }
       else {
         console.log("Frage existiert nicht also anfügen an " + req.body._id);
-        dbo.collection(collectionName).updateOne(
+        dbo.collection("R"+req.params.polltype).updateOne(
           { _id: req.body._id },
           {
             $addToSet: {
@@ -225,8 +216,8 @@ router.put('/quest/', function (req, res) {
 /**
  * Alle Klassen einer Umfrage abfragen
  */
-router.get('/courses/:poll', function (req, res, next) {
-  console.log('GET Courses from poll ' + req.params.poll);
+router.get('/courses/:polltype/:poll', function (req, res, next) {
+  console.log('GET Courses from poll ' + req.params.poll+ " polltype="+req.params.polltype);
   console.log("Header Secret:" + req.header("secret"));
 
   res.setHeader('Content-Type', 'application/json');
@@ -235,7 +226,7 @@ router.get('/courses/:poll', function (req, res, next) {
     return;
   }
 
-  dbo.collection(collectionName).distinct("course", { poll: req.params.poll }, function (err, result) {
+  dbo.collection("R"+req.params.polltype).distinct("course", { poll: req.params.poll }, function (err, result) {
     if (err) {
       console.log("Recieve Error:" + err);
     }
@@ -249,8 +240,8 @@ router.get('/courses/:poll', function (req, res, next) {
 /**
  * Alle Umfragen abfragen
  */
-router.get('/polls', function (req, res, next) {
-  console.log('GET Courses');
+router.get('/polls/:polltype', function (req, res, next) {
+  console.log('GET Courses von polltype='+req.params.polltype);
   console.log("Header Secret:" + req.header("secret"));
 
   res.setHeader('Content-Type', 'application/json');
@@ -259,7 +250,7 @@ router.get('/polls', function (req, res, next) {
     return;
   }
 
-  dbo.collection(collectionName).distinct("poll", function (err, result) {
+  dbo.collection("R"+req.params.polltype).distinct("poll", function (err, result) {
     if (err) {
       console.log("Recieve Error:" + err);
     }
@@ -273,8 +264,8 @@ router.get('/polls', function (req, res, next) {
 /**
  * Alle Fragen abfragen
  */
-router.get('/questions', function (req, res, next) {
-  console.log('GET Questions');
+router.get('/questions/:polltype', function (req, res, next) {
+  console.log('GET Questions polltype='+req.params.polltype);
   console.log("Header Secret:" + req.header("secret"));
 
   res.setHeader('Content-Type', 'application/json');
@@ -283,15 +274,48 @@ router.get('/questions', function (req, res, next) {
     return;
   }
 
-  res.send(JSON.stringify(questionlist));
- 
+  dbo.collection("Q"+req.params.polltype).find().toArray(function (err, result) {
+    if (err) {
+      console.log("Recieve Error:" + err);
+    }
+    else {
+      console.log("Get questions returns " + JSON.stringify(result));
+      res.send(JSON.stringify(result));
+    }
+  })
 })
 
 /**
- * Umfrage auswerten 
+ * Alle Antworten abfragen
  */
-router.get('/evaluate/:poll/:course', function (req, res, next) {
-  console.log('GET Evaluate for poll ' + req.params.poll + " with pattern " + req.params.course);
+router.get('/answers/:polltype', function (req, res, next) {
+  console.log('GET Answers polltype='+req.params.polltype);
+  console.log("Header Secret:" + req.header("secret"));
+
+  res.setHeader('Content-Type', 'application/json');
+  if (req.header("secret") != "1234") {
+    res.sendStatus(403);
+    return;
+  }
+
+  dbo.collection("A"+req.params.polltype).find().toArray(function (err, result) {
+    if (err) {
+      console.log("Recieve Error:" + err);
+    }
+    else {
+      console.log("Get answers returns " + JSON.stringify(result));
+      res.send(JSON.stringify(result));
+    }
+  })
+})
+
+
+/**
+ * Umfrage auswerten Format /evaluate/{polltype}/{poll}/{course}
+ * Wobei {poll} und {course} als RegEx interpretiert werden
+ */
+router.get('/evaluate/:polltype/:poll/:course', function (req, res, next) {
+  console.log('GET Evaluate for polltype='+req.params.polltype+' poll=' + req.params.poll + " with pattern " + req.params.course);
   console.log("Header Secret:" + req.header("secret"));
 
   res.setHeader('Content-Type', 'application/json');
@@ -309,23 +333,34 @@ router.get('/evaluate/:poll/:course', function (req, res, next) {
     {$sort: {_id: 1}}   
     ])
    */
-  dbo.collection(collectionName).aggregate(
-    [
-      { $match: { "course": {$regex:req.params.course},"poll": {$regex:req.params.poll} }},
-      { $unwind: "$antworten" },
-      { $group: { _id: "$antworten", count: { $sum: 1 } } },
-      { $sort: { _id: 1 } }
-    ]
-  ).toArray(function (err, result) {
+  var questionlist;
+  dbo.collection("Q"+req.params.polltype).find().toArray(function (err, result) {
     if (err) {
       console.log("Recieve Error:" + err);
     }
     else {
-      questionlist.forEach(element => {
-       element.evaluation=[]; 
-      });
-      r = joinResults(result,questionlist);
-      res.send(JSON.stringify(r));
+      console.log("Get questions returns " + JSON.stringify(result));
+      questionlist=result;
+      console.log('Fragenliste umfasst '+questionlist.length+ " Fragen");
+      dbo.collection("R"+req.params.polltype).aggregate(
+        [
+          { $match: { "course": {$regex:req.params.course},"poll": {$regex:req.params.poll} }},
+          { $unwind: "$antworten" },
+          { $group: { _id: "$antworten", count: { $sum: 1 } } },
+          { $sort: { _id: 1 } }
+        ]
+      ).toArray(function (err, result) {
+        if (err) {
+          console.log("Recieve Error:" + err);
+        }
+        else {
+          questionlist.forEach(element => {
+           element.evaluation=[]; 
+          });
+          r = joinResults(result,questionlist);
+          res.send(JSON.stringify(r));
+        }
+      })    
     }
   })
 })

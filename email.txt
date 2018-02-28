@@ -1,4 +1,4 @@
-Liebe Schülerinnen und Schülern,
+Liebe Schülerinnen und Schüler,
 hiermit möchte ich euch einladen an der Umfrage <b>{poll}</b> teilzunehmen. Ihr erreicht die Umfrage über folgenden Link:
 
 <a href="http://localhost:4200/bho/{id}">Umfrage</a>
