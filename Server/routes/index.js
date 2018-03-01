@@ -17,7 +17,7 @@ MongoClient.connect(url, function (err, db) {
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Umfrageserver V1.0 is running..!'});
+  res.render('index', { title: 'Umfrageserver V1.1 is running..!'});
 });
 
 /**
@@ -33,7 +33,7 @@ router.get('/quest/:polltype/:id', function (req, res, next) {
     return;
   }
 
-  res.setHeader('Content-Type', 'application/json');
+ 
   returnObj = {
     success: false,
     msg: "No message"
@@ -46,9 +46,34 @@ router.get('/quest/:polltype/:id', function (req, res, next) {
       res.send(JSON.stringify(returnObj));
     }
     else {
-      res.send(JSON.stringify(result));
+      if (result.length==0) {
+        res.sendStatus(404);
+      }
+      else {
+        // Schauen um die Umfrage enabled ist
+        query = { _id: result[0].poll };
+        dbo.collection("C"+req.params.polltype).find(query).toArray(function (err, r2) {
+          if (err) {
+            console.log('Fehler beim Suchen der Umfrage '+result[0].poll+' !');
+            // Ist die Umfrage nicht Aktiv wird status Code 204 = no data zurück gesendet!
+            res.sendStatus(404);
+          }
+          else {
+            console.log(r2);
+            if (r2[0] && r2[0].enable) {
+              res.send(JSON.stringify(result));
+            }
+            else {
+              console.log('Die Umfrage '+result[0].poll+' ist nicht aktiv');
+              // Ist die Umfrage nicht Aktiv wird status Code 204 = no data zurück gesendet!
+              res.sendStatus(204);
+            }
+          }
+        });
+      }
     }
     console.log(result);
+    
   });
 })
 

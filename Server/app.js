@@ -7,7 +7,17 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var config = require('./config')
 
+console.log('Access-Control-Allow-Origin ist '+config.server);
+//CORS middleware
+var allowCrossDomain = function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', config.server);
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,secret');
+
+  next();
+}
 var app = express();
 
 // view engine setup
@@ -21,7 +31,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(allowCrossDomain);
 app.use('/', index);
 app.use('/users', users);
 

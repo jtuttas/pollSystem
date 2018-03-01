@@ -5,14 +5,14 @@ Content-Type: application/json
 secret: 1234
 
 {
-    "_id": "abcdef",
+    "_id": "abcde",
     "course": "FIAE17J",
     "poll": "Umfrage1",
     "email": "fiae17j.mmusterm@mm-bbs.de"
 }
 
 ### bisherige Antworten des Teilnehmes abfragen quest/{polltype}/{key}
-GET http://{{host}}:3000/quest/bho/abcdef HTTP/1.1
+GET http://{{host}}:3000/quest/bho/abcde HTTP/1.1
 secret: 1234
 
 ### Antwort eines Teilnehmes eintragen quest/{polltype}
@@ -21,9 +21,9 @@ Content-Type: application/json
 secret: 1234
 
 {
-    "_id": "abcdef",
+    "_id": "abcde",
     "question": "Q1",
-    "answer": 1
+    "answer": 5
 }
 
 ### Abfragen der Klassen einer Umfrage im Format /course/{polltype}/{poll}
@@ -47,6 +47,6 @@ Content-Type: application/json
 secret: 1234
 
 ### Auswertung abfragen im Format {polltype}/{poll}/{course}. Wobei poll und course als RegEx ausgewretet werden
-GET http://{{host}}:3000/evaluate/bho/Umfrag/FIAE17 HTTP/1.1
+GET http://{{host}}:3000/evaluate/bho/Umfrag/FIAE HTTP/1.1
 Content-Type: application/json
 secret: 1234

@@ -1,0 +1,19 @@
+<h1>{{msg}}</h1>
+<p-table [value]="questions">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Frage</th>
+            <th *ngFor="let answer of answers">
+                {{answer.text}}
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowIndex="rowIndex"  let-questions>
+        <tr>
+            <td>{{questions.text}}</td>
+            <td *ngFor="let answer of answers">
+                <p-radioButton name='{{questions.text}}' value="{{answer.item}}" [(ngModel)]="selectedValue[rowIndex]"></p-radioButton>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
