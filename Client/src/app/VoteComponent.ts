@@ -11,7 +11,8 @@ import {RadioButtonModule} from 'primeng/radiobutton';
 
 @Component({
     selector: 'vote',
-    templateUrl: './vote.component.html'
+    templateUrl: './vote.component.html',
+    styleUrls: ['./vote.component.css']
 })
 export class VoteComponent implements OnInit {
     id: string;
@@ -44,7 +45,7 @@ export class VoteComponent implements OnInit {
                     else {
                         this.results = data[0].antworten;
                         console.log("Anzahl der Antworten: " + this.results.length)
-                        this.msg = "Umfrage:"+data[0].poll;
+                        this.msg = data[0].poll;
                         this.loadQuestions();
                         this.loadAnswers();
                     }
@@ -99,6 +100,12 @@ export class VoteComponent implements OnInit {
     }
 
 
+    radioClick(d) {
+        console.log("Klick row="+JSON.stringify(d));
+        console.log("Value Changed (Set) to "+this.selectedValue[d]);
+        
+        
+    }
 
 
 }

@@ -3,16 +3,16 @@
     <ng-template pTemplate="header">
         <tr>
             <th>Frage</th>
-            <th *ngFor="let answer of answers">
+            <th *ngFor="let answer of answers"  class="answers">
                 {{answer.text}}
             </th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-rowIndex="rowIndex"  let-questions>
+    <ng-template pTemplate="body"   let-rowIndex="rowIndex"  let-questions>
         <tr>
-            <td>{{questions.text}}</td>
-            <td *ngFor="let answer of answers">
-                <p-radioButton name='{{questions.text}}' value="{{answer.item}}" [(ngModel)]="selectedValue[rowIndex]"></p-radioButton>
+            <td  class='questions'>{{questions.text}}</td>
+            <td  class='answers' *ngFor="let answer of answers" >
+                <p-radioButton (click)="radioClick(rowIndex)" name='{{questions.text}}' value="{{answer.item}}" [(ngModel)]="selectedValue[rowIndex]"></p-radioButton>
             </td>
         </tr>
     </ng-template>

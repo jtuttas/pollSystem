@@ -1,0 +1,14 @@
+h1 {
+    text-align: center;
+    font-family: Tahoma, Verdana, Segoe, sans-serif;
+}
+
+.questions{
+    width:50% !important;
+    text-align: right !important;
+}
+.answers {
+    width:150px !important;
+    text-align: center;
+    font-size: 12px;
+}
