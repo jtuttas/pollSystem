@@ -40,10 +40,10 @@ Im Folgenden will ich kurz das Durchführen einer Umfrage beschreiben.
 ### Import der Fragen
 Am besten befinden sich die Fragen in einer Excel Tabelle mit folgender Struktur.
 
-question | 
+row | question
 --- | ---
-| Hier eine Frage |  |
-| Hier noch eine Frage|  |
+1 | Hier eine Frage |
+2 | Hier noch eine Frage |
 
 
 Diese Fragen könne einfach über *Import-Question* importtiert werden.
