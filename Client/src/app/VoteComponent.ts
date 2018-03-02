@@ -8,6 +8,8 @@ import { TableModule } from 'primeng/table';
 import { Result } from './Result';
 import { forEach } from '@angular/router/src/utils/collection';
 import {RadioButtonModule} from 'primeng/radiobutton';
+import {Message} from 'primeng/api';
+import {MessageService} from "primeng/components/common/messageservice";
 
 @Component({
     selector: 'vote',
@@ -22,11 +24,12 @@ export class VoteComponent implements OnInit {
     answers: Answer[];
     results: Result[];
     selectedValue:string[];
+    msgs: Message[] = [];
 
 
     private sub: any;
 
-    constructor(private route: ActivatedRoute, private pollservice: PollService, private router: Router) {
+    constructor(private messageService: MessageService,private route: ActivatedRoute, private pollservice: PollService, private router: Router) {
 
     }
 
@@ -51,7 +54,7 @@ export class VoteComponent implements OnInit {
                     }
                 },
                 err => {
-                    console.log("Fehler");
+                    console.log("Fehler "+JSON.stringify(err));
                     this.router.navigate(["/notfound"]);
                 }
             );
@@ -90,7 +93,7 @@ export class VoteComponent implements OnInit {
         this.questions.forEach(element => {
             this.results.forEach(erlement => {
                 if (element._id==erlement.question) {
-                    console.log("Frage "+element._id+" wurde beantwortet mit "+erlement.answer+ "Serte selectted Values["+i+"] auf Wert");                    
+                    console.log("Frage "+element._id+" wurde beantwortet mit "+erlement.answer+ "Serte selectted Values["+i+"] auf Wert");    
                     this.selectedValue[i]=""+erlement.answer;
                 }
             });
@@ -107,9 +110,13 @@ export class VoteComponent implements OnInit {
         this.pollservice.setAnswer(this.polltype,this.id,this.questions[d]._id,+this.selectedValue[d]).subscribe(
             data => {
                 console.log("Antwort vom Server beim Eintragen der Vote:" + JSON.stringify(data));
+                if (!data.success) {
+                    this.messageService.add({severity:'error', summary:'Voting', detail:data.msg});
+                }
             },
             err => {
                 console.log("Fehler beim Eintragen der Vote:");
+                this.messageService.add({severity:'error', summary:'Voting', detail:"Fehler beim Eintragen des Wertes"});
             }
         );
     }

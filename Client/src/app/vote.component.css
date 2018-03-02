@@ -6,9 +6,11 @@ h1 {
 .questions{
     width:50% !important;
     text-align: right !important;
+    height: 35px;
 }
 .answers {
     width:150px !important;
     text-align: center;
     font-size: 12px;
+    height: 35px;    
 }
