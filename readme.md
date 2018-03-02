@@ -91,7 +91,7 @@ wird eine Umfrage mit dem Namen **Umfrage2** vom Type **bho** freigeschaltet und
 
 # Screenshots
 Teilnehmeransicht (Durchführen der Umfrage)
-![voting](voting.png "Voting for a Poll")
+![voting](voting.PNG "Voting for a Poll")
 
 
 
