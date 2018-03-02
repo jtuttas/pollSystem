@@ -54,10 +54,10 @@ Wobei Polltype der Type der Umfrage ist und mongoDB der Connectionstring zur Dat
 ### Import der Antworskalen
 In ähnlicher Weise können die Antwortskalen importiert werden. Diese befinden sich günstiger Weise auch in einer Excel Tabelle mit folgenden Aussehen:
 
-answer | item 
---- | ---
-| Volle Zustimmung | 5 |
-| Zustimmung| 4 |
+row | answer | item 
+--- | --- | ---
+1 | Volle Zustimmung | 5 |
+2 | Zustimmung| 4 |
 
 Itemwerte <0 werden dabei in der Auswertung nicht berücksichtig und eignen sich z.B. für Feler wie "Enthaltung".
 
@@ -66,8 +66,8 @@ Diese Antworten könne einfach über *Import-Answer* importiert werden.
 Import-Excel antworten.xlsx | Import-Answer -Polltype bho -mongoDB mongodb://localhost:27017/ 
 ```
 Wobei Polltype der Type der Umfrage ist und mongoDB der Connectionstring zur Datenbank. Default heißt die Datenbank *umfrage* und es wir eine Collection *A{polltype}* angelegt.
-### Importtieren und Anschreiben der Teilnehmer
-Zum Erzeugen und anschreiben der Teilnehmer dienen die CMDlet *New-Subscriber* und *Invite-Subscriber*. Diese erzeugen einen neuen Teilnehmer und senden ihm eine EMail. Der Text der EMail könnte z.B. so lauten:
+### Importieren und Anschreiben der Teilnehmer
+Zum Erzeugen und Anschreiben der Teilnehmer dienen die CMDlet *New-Subscriber* und *Invite-Subscriber*. Diese erzeugen einen neuen Teilnehmer und senden ihm eine EMail. Der Text der EMail könnte z.B. so lauten:
 ```html
 Liebe Schülerinnen und Schüler,
 hiermit möchte ich euch einladen an der Umfrage <b>{poll}</b> teilzunehmen. Ihr erreicht die Umfrage über folgenden Link:
@@ -88,6 +88,10 @@ New-Poll -Polltype bho -Enable $true -Poll Umfrage2 -Password geheim -mongoDB mo
 
 ```
 wird eine Umfrage mit dem Namen **Umfrage2** vom Type **bho** freigeschaltet und das Kennwort **geheim** für die spätere Auswertung vergeben. Diese Daten werden in der Collection *C{polltype}* gespeichert.
+
+# Screenshots
+Teilnehmeransicht (Durchführen der Umfrage)
+![voting](voting.png "Voting for a Poll")
 
 
 
