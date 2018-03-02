@@ -68,9 +68,12 @@ export class VoteComponent implements OnInit {
                 console.log("Die Fragen" + JSON.stringify(data));
                 this.questions = data;
                 this.selectedValue = new Array<string>(this.questions.length);
+                if (data.length==0) {
+                    this.messageService.add({severity:'error', summary:'Voting', detail:"Der Umfragetyp enthält keine Fragen"});
+                } 
             },
             err => {
-                console.log("Fehler");
+                console.log("Fehler loadQuestions()");
             }
         );
     }
@@ -80,10 +83,13 @@ export class VoteComponent implements OnInit {
             data => {
                 console.log("Die Antwortskalen" + JSON.stringify(data));
                 this.answers = data;
+                if (data.length==0) {
+                    this.messageService.add({severity:'error', summary:'Voting', detail:"Der Umfragetyp enthält keine Antwortskalen"});
+                }                
                 this.calcSelected()
             },
             err => {
-                console.log("Fehler");
+                console.log("Fehler loadAnswer()");
             }
         );
     }

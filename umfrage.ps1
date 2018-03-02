@@ -60,9 +60,17 @@ function Import-Question {
     Process {
         
         if (-not $_id) {
-            Write-Verbose "Anlegen der Frage ($Question) mit der ID (Q$n)"
-            @{_id = "Q$n"; text = $Question} | Add-MdbcData
-            $n++
+            if ($Question.Question) {
+                Write-Verbose "Anlegen der Frage ($Question.Question) mit der ID (Q$n)!"
+                @{_id = "Q$n"; text = $Question.Question} | Add-MdbcData
+                $n++
+            }
+            else {
+                Write-Verbose "Anlegen der Frage ($Question) mit der ID (Q$n)!"
+                @{_id = "Q$n"; text = $Question} | Add-MdbcData
+                $n++
+                
+            }
         }
         else {
             Write-Verbose "Anlegen der Frage ($Question) mit der ID ($_id)"
