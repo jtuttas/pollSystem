@@ -39,10 +39,11 @@ Die Funktionen sind alle mit Hilfstexten versehen und So kann über *Get-Help Ne
 Im Folgenden will ich kurz das Durchführen einer Umfrage beschreiben.
 ### Import der Fragen
 Am besten befinden sich die Fragen in einer Excel Tabelle mit folgender Struktur.
-|Question|
+
+| Question |
 ---
-|Hier eine Frage |
-|Hier noch eine Frage|
+| Hier eine Frage |
+| Hier noch eine Frage |
 
 Diese Fragen könne einfach über *Import-Question* importtiert werden.
 ```ps

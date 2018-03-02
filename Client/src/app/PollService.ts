@@ -59,6 +59,31 @@ export class PollService {
             .catch(this.handleError);
     }
 
+    /**
+     * Eine Antwort senden
+     * @param polltype Der Umfragetyp
+     * @param id Die ID des Teilnehmers
+     * @param questionID Die ID der Frage
+     * @param answer Der Item Wert
+     */
+    setAnswer(polltype: string, id: string, questionID: string,answer:number) {
+        var headers = new Headers();
+        headers.append("secret", Config.SECRET);
+        headers.append("Content-Type", "application/json;  charset=UTF-8");
+        this.url = Config.SERVER + "quest/" + polltype;
+        var body = {
+            "_id": id,
+            "question": questionID,
+            "answer": answer
+        }
+        console.log("Sende zum Server: "+JSON.stringify(body));
+        
+        return this.http.put(this.url,JSON.stringify(body),{ headers: headers })
+            .map(this.extractData)
+            .catch(this.handleError);
+
+    }
+
 
     private extractData(res: Response) {
         console.log("Receive Data: " + JSON.stringify(res.json()));

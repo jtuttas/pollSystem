@@ -104,7 +104,14 @@ export class VoteComponent implements OnInit {
         console.log("Klick row="+JSON.stringify(d));
         console.log("Value Changed (Set) to "+this.selectedValue[d]);
         
-        
+        this.pollservice.setAnswer(this.polltype,this.id,this.questions[d]._id,+this.selectedValue[d]).subscribe(
+            data => {
+                console.log("Antwort vom Server beim Eintragen der Vote:" + JSON.stringify(data));
+            },
+            err => {
+                console.log("Fehler beim Eintragen der Vote:");
+            }
+        );
     }
 
 
