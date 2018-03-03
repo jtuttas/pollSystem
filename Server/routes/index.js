@@ -5,6 +5,7 @@ var dbname = "umfrage"
 var collectionName = "antworten"
 var url = "mongodb://localhost:27017/";
 var dbo;
+var config = require('./config')
 
 // Connect to the db
 MongoClient.connect(url, function (err, db) {
@@ -17,7 +18,7 @@ MongoClient.connect(url, function (err, db) {
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Umfrageserver V1.1 is running..!'});
+  res.render('index', { title: 'Umfrageserver '+config.Version+' is running..!!'});
 });
 
 /**

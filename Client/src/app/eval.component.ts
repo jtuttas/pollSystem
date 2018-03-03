@@ -6,6 +6,7 @@ import { Message } from 'primeng/api';
 import { PollService } from './PollService';
 import { Question } from './Question';
 import { SelectItem } from 'primeng/api';
+import {DialogModule} from 'primeng/dialog';
 
 @Component({
     selector: 'eval',
@@ -21,24 +22,41 @@ export class EvalComponent implements OnInit {
     selectedHauptumfrage: any;
     selectedVergleichsumfrage: any;
     umfragen: SelectItem[];
-    coursesHauptgruppe: SelectItem[];
-    coursesVergleichsgruppe: SelectItem[];
+    coursesHauptgruppe: SelectItem[]= new Array();
+    coursesVergleichsgruppe: SelectItem[] = new Array();
     selectedHauptKlasse: any;
     selectedVergleichsklasse: any;
+    displayHaupt: boolean = false;
+    displayVergleich: boolean = false;
 
     constructor(private messageService: MessageService, private route: ActivatedRoute, private pollservice: PollService, private evalservice: EvalService, private router: Router) {
 
     }
 
-    pollHauptKlasseSelected() {
+    startHaupt() {
         if (this.selectedHauptKlasse) {
             console.log("Haut Klassen geählt: " + this.selectedHauptKlasse);
+            if (!this.selectedHauptumfrage) {
+                this.messageService.add({ severity: 'warning', summary: "Warnung", detail: "Keine Umfrage gewählt!" });
+            }
+            else {
+                this.displayHaupt=true;
+            }
         }
+
     }
-    pollVergleichsKlasseSelected() {
+
+    startVergleich() {
         if (this.selectedVergleichsklasse) {
             console.log("Vergleichs Klassen gewählt: " + this.selectedVergleichsklasse);
+            if (!this.selectedVergleichsumfrage) {
+                this.messageService.add({ severity: 'warning', summary: "Warnung", detail: "Keine Umfrage gewählt!" });
+            }
+            else {
+                this.displayVergleich=true;
+            }
         }
+
     }
     pollHauptgruppeSelected() {
         if (this.selectedHauptumfrage) {

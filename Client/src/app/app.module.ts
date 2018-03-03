@@ -16,13 +16,16 @@ import { EvalService } from './EvalService';
 import { EvalComponent } from './eval.component';
 import {DropdownModule} from 'primeng/dropdown';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {ButtonModule} from 'primeng/button';
+import {DialogModule} from 'primeng/dialog';
 @NgModule({
   declarations: [
     AppComponent, VoteComponent, PageNotFoundComponent,EvalComponent
   ],
   exports: [VoteComponent, PageNotFoundComponent],
   imports: [
-    BrowserModule, routing, HttpModule, TableModule,RadioButtonModule,FormsModule,GrowlModule,DropdownModule,BrowserAnimationsModule
+    BrowserModule, routing, HttpModule, TableModule,RadioButtonModule,FormsModule,GrowlModule,DropdownModule,
+    BrowserAnimationsModule, ButtonModule, DialogModule
   ],
   providers: [PollService,MessageService,EvalService],
   bootstrap: [AppComponent]
