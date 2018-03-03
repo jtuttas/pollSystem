@@ -275,7 +275,7 @@ router.get('/polls/:polltype', function (req, res, next) {
     return;
   }
 
-  dbo.collection("R"+req.params.polltype).distinct("poll", function (err, result) {
+  dbo.collection("C"+req.params.polltype).distinct("_id", function (err, result) {
     if (err) {
       console.log("Recieve Error:" + err);
     }

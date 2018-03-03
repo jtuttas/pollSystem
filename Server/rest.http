@@ -27,7 +27,7 @@ secret: 1234
 }
 
 ### Abfragen der Klassen einer Umfrage im Format /course/{polltype}/{poll}
-GET http://{{host}}:3000/courses/bho/Umfrage1 HTTP/1.1
+GET http://{{host}}:3000/courses/bho/Umfrage HTTP/1.1
 Content-Type: application/json
 secret: 1234
 
