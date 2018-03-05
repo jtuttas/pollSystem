@@ -28,7 +28,7 @@ export class EvalService {
     }
 
     /**
-     * Anbfrage der Klassen, die an der Umfrage eingeladen wurden
+     * Abfrage der Klassen, die an der Umfrage eingeladen wurden
      * @param polltype Der Polltype 
      * @param poll Die Umfrage
      */
@@ -39,6 +39,25 @@ export class EvalService {
 
         this.url = Config.SERVER + "courses/" + polltype+"/"+poll ;
         console.log("get Courses Results  URL=" + this.url);
+        return this.http.get(this.url, { headers: headers })
+            .map(this.extractData)
+            .catch(this.handleError);
+    }
+
+     /**
+     * Auswerten der Umfrage
+     * @param polltype Der Polltype 
+     * @param poll Die Umfrage
+     * @param course Die Klassen (darf RegEx sein)
+     * 
+     */
+    getEvaluation(polltype: string,poll:string,course:string) {
+        var headers = new Headers();
+        headers.append("secret", Config.SECRET);
+        headers.append("Content-Type", "application/json;  charset=UTF-8");
+
+        this.url = Config.SERVER + "evaluate/"+polltype+"/"+poll+"/"+course ;
+        console.log("get Evaluation Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
             .catch(this.handleError);

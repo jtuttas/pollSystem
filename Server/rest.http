@@ -47,6 +47,6 @@ Content-Type: application/json
 secret: 1234
 
 ### Auswertung abfragen im Format {polltype}/{poll}/{course}. Wobei poll und course als RegEx ausgewretet werden
-GET http://{{host}}:3000/evaluate/bho/Umfrag/FIAE HTTP/1.1
+GET http://{{host}}:3000/evaluate/bho/Umfrage1/FIAE17K HTTP/1.1
 Content-Type: application/json
 secret: 1234

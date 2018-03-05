@@ -18,6 +18,7 @@ import {DropdownModule} from 'primeng/dropdown';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ButtonModule} from 'primeng/button';
 import {DialogModule} from 'primeng/dialog';
+import {ChartModule} from 'primeng/chart';
 @NgModule({
   declarations: [
     AppComponent, VoteComponent, PageNotFoundComponent,EvalComponent
@@ -25,8 +26,9 @@ import {DialogModule} from 'primeng/dialog';
   exports: [VoteComponent, PageNotFoundComponent],
   imports: [
     BrowserModule, routing, HttpModule, TableModule,RadioButtonModule,FormsModule,GrowlModule,DropdownModule,
-    BrowserAnimationsModule, ButtonModule, DialogModule
+    BrowserAnimationsModule, ButtonModule, DialogModule,ChartModule
   ],
+  
   providers: [PollService,MessageService,EvalService],
   bootstrap: [AppComponent]
 })
