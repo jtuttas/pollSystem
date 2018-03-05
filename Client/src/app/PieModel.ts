@@ -1,10 +1,22 @@
+import { Question } from "./Question";
+
 export class PieModel {
     labels:string[]=[];
+    totalCount:number=0;
+    average:number=0;
     datasets:Dataset[]=[new Dataset()];
+
+    constructor(items:string[]) {
+        if (items) {
+            items.forEach(element => {
+                this.labels.push(element);
+            });
+        }
+    }
 }
 
 export class Dataset{
-    data:number[]=[1,2,3,4,5,6]
+    data:number[]=[]
     backgroundColor:string[]= [
         "#FF6384",
         "#36A2EB",

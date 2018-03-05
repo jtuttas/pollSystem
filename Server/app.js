@@ -9,7 +9,6 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 
 
-console.log('Access-Control-Allow-Origin ist '+config.server);
 //CORS middleware
 var allowCrossDomain = function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');

@@ -5,7 +5,7 @@ var dbname = "umfrage"
 var collectionName = "antworten"
 var url = "mongodb://localhost:27017/";
 var dbo;
-var config = require('./config')
+var config = require('../config')
 
 // Connect to the db
 MongoClient.connect(url, function (err, db) {
@@ -15,10 +15,11 @@ MongoClient.connect(url, function (err, db) {
   }
 });
 
+console.log('config ist '+JSON.stringify(config));
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Umfrageserver '+config.Version+' is running..!!'});
+  res.render('index', { title: 'Umfrageserver '+config.server+' is running..!!'});
 });
 
 /**
@@ -31,7 +32,7 @@ router.get('/quest/:polltype/:id', function (req, res, next) {
   res.setHeader('Content-Type', 'application/json');
   if (req.header("secret") != "1234") {
     res.sendStatus(403);
-    return;
+    return; 
   }
 
  

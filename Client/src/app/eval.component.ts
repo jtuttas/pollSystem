@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, DoCheck, AfterContentInit } from '@angular/core';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { EvalService } from './EvalService';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
@@ -11,6 +11,7 @@ import { Answer } from './Answer';
 import { EvalResult } from './EvalResult';
 import { ChartModule } from 'primeng/chart';
 import { PieModel } from './PieModel';
+import { forEach } from '@angular/router/src/utils/collection';
 @Component({
     selector: 'eval',
     templateUrl: './eval.component.html',
@@ -21,9 +22,12 @@ export class EvalComponent implements OnInit {
     private sub: any;
     private polltype: string;
     msgs: Message[] = [];
-    questions: Question[];
     answers: Answer[];
     selectedHauptumfrage: any;
+    private questions: Question[] = [];
+    
+    private questionData: Question[] = [];
+    
     selectedVergleichsumfrage: any;
     umfragen: SelectItem[];
     coursesHauptgruppe: SelectItem[] = new Array();
@@ -52,7 +56,8 @@ export class EvalComponent implements OnInit {
                         console.log("Empfange Auswertung: " + JSON.stringify(data));
                         let evaluation: EvalResult[];
                         evaluation = data;
-                        this.generateDatamodel(evaluation,this.modelHauptgruppen);
+                        this.modelHauptgruppen = [];
+                        this.modelHauptgruppen = this.generateDatamodel(evaluation);
                         this.displayHaupt = false;
                     },
                     err => {
@@ -77,7 +82,8 @@ export class EvalComponent implements OnInit {
                         console.log("Empfange Auswertung: " + JSON.stringify(data));
                         let evaluation: EvalResult[];
                         evaluation = data;
-                        this.generateDatamodel(evaluation,this.modelVergleichsgruppen);
+                        this.modelVergleichsgruppen = [];
+                        this.modelVergleichsgruppen = this.generateDatamodel(evaluation);
                         this.displayVergleich = false;
                     },
                     err => {
@@ -89,17 +95,32 @@ export class EvalComponent implements OnInit {
         }
     }
 
-    generateDatamodel(evaluation: EvalResult[],theModel:PieModel[]) {
-        var n=0;
-        evaluation.forEach(evalElement => {
-            console.log("Bearbeite Frage " + evalElement._id + " mit text:" + evalElement.text);
-            theModel[n].datasets[0].data=[];
-            this.answers.forEach(element => {
-                var foundCount = this.findCount(evalElement, element.item);
-                theModel[n].datasets[0].data.push(foundCount);
-            });
-            n++;
+    generateDatamodel(evaluation: EvalResult[]) {
+        var theModel: PieModel[] = [];
+
+        var labels: string[] = [];
+        this.answers.forEach(element => {
+            labels.push(element.text);
         });
+        this.questions.forEach(element => {
+            var pdata: PieModel = new PieModel(labels);
+            theModel.push(pdata);
+        });
+        var n = 0;
+        if (evaluation) {
+            evaluation.forEach(evalElement => {
+                console.log("Bearbeite Frage " + evalElement._id + " mit text:" + evalElement.text);
+                theModel[n].datasets[0].data = [];
+                this.answers.forEach(element => {
+                    var foundCount = this.findCount(evalElement, element.item);
+                    theModel[n].datasets[0].data.push(foundCount);
+                });
+                console.log("Antworten sind: " + JSON.stringify(theModel[n].datasets[0].data));
+                n++;
+            });
+        }
+
+        return theModel;
     }
 
     findCount(ev: EvalResult, itemToFind: number) {
@@ -201,55 +222,41 @@ export class EvalComponent implements OnInit {
             this.pollservice.getQuestions(this.polltype).subscribe(
                 data => {
                     console.log("Die Fragen" + JSON.stringify(data));
-                    this.modelHauptgruppen=[];
-                    this.modelVergleichsgruppen=[];
-                    var qs: Question[];
-                    qs=data;
-                    qs.forEach(element => {
-                        var pdata:PieModel = new PieModel();
-                        this.modelHauptgruppen.push(pdata);
-                        this.modelVergleichsgruppen.push(pdata);
-                    });
-                    console.log("---> Modell enthält"+this.modelHauptgruppen.length+" einträge");
-                    console.log(" Eintrag 0 ist:"+JSON.stringify(this.modelHauptgruppen[0]));
-                    this.questions=data;
+
                     if (data.length == 0) {
                         this.messageService.add({ severity: 'error', summary: 'Voting', detail: "Der Umfragetyp enthält keine Fragen" });
                     }
                     this.pollservice.getAnswers(this.polltype).subscribe(
-                        data => {
-                            console.log("Die Antwortskalen" + JSON.stringify(data));
-                            this.answers = data;
-                            var labels:string[]=[];
-
-                            if (data.length == 0) {
+                        data2 => {
+                            var i=0;
+                            data.forEach(element => {
+                                this.questions.push(new Question(""+element._id,""+element.text));
+                                i++;
+                            });
+                            this.answers = data2;
+                            if (data2.length == 0) {
                                 this.messageService.add({ severity: 'error', summary: 'Voting', detail: "Der Umfragetyp enthält keine Antwortskalen" });
                             }
                             else {
-                                this.answers.forEach(element => {
-                                    labels.push(element.text);
-                                });
-                                this.modelHauptgruppen.forEach(element => {
-                                    element.labels=labels;
-                                });
-                                this.modelVergleichsgruppen.forEach(element => {
-                                    element.labels=labels;
-                                });
-                                console.log("Fraben= "+JSON.stringify(this.modelHauptgruppen[0].datasets[0].backgroundColor));
-                                
+                                this.modelVergleichsgruppen = this.generateDatamodel(null);
+                                this.modelHauptgruppen = this.generateDatamodel(null);
+                                console.log("Hauptgruppe="+JSON.stringify(this.modelHauptgruppen,null,4)); 
+                                this.questionData=new Array(5);                               
                             }
                         },
                         err => {
                             console.log("Fehler loadAnswer()");
                         }
                     );
+                    
                 },
                 err => {
-                    console.log("Fehler loadQuestions()");
+                    console.log("Fehler loadquestionModel()");
                 }
             );
-
+            
         });
-
+       
     }
+
 }
