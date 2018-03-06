@@ -36,6 +36,7 @@ export class EvalComponent implements OnInit {
     selectedVergleichsklasse: any;
     displayHaupt: boolean = false;
     displayVergleich: boolean = false;
+    displayHilfe: boolean = false;
     modelHauptgruppen: PieModel[] = [];
     modelVergleichsgruppen: PieModel[] = [];
 
@@ -109,13 +110,21 @@ export class EvalComponent implements OnInit {
         var n = 0;
         if (evaluation) {
             evaluation.forEach(evalElement => {
+                var sum=0;
+                var number=0;
                 console.log("Bearbeite Frage " + evalElement._id + " mit text:" + evalElement.text);
                 theModel[n].datasets[0].data = [];
                 this.answers.forEach(element => {
                     var foundCount = this.findCount(evalElement, element.item);
+                    if (element.item>0) {
+                        sum+=element.item*foundCount;
+                        number+=foundCount;
+                    }
                     theModel[n].datasets[0].data.push(foundCount);
                 });
-                console.log("Antworten sind: " + JSON.stringify(theModel[n].datasets[0].data));
+                theModel[n].totalCount=number;
+                theModel[n].average=Math.round((sum/number) * 100) / 100;
+                //console.log("Antworten sind: " + JSON.stringify(theModel[n].datasets[0].data));
                 n++;
             });
         }
@@ -259,4 +268,7 @@ export class EvalComponent implements OnInit {
        
     }
 
+    showHelp() {
+        this.displayHilfe=true;
+    }
 }

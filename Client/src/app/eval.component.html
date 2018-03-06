@@ -8,7 +8,9 @@
                     <p-dropdown placeholder="Umfrage auswählen" (onChange)="pollHauptgruppeSelected()" autoWidth="false" [style]="{'width':'100%'}"
                         [options]="umfragen" [(ngModel)]="selectedHauptumfrage"></p-dropdown>
                 </p>
-                <div class="first">Klassen [{{coursesHauptgruppe.length}}] (RegEx)</div>
+                <div class="first">
+                    <img class="info" src="../assets/Info.png" (click)="showHelp()">Klassen [{{coursesHauptgruppe.length}}] (
+                    <i>RegEx</i>)</div>
                 <p style="text-align:left;">
                     <span>
                         <p-dropdown editable="true" placeholder="Klasse(n) auswählen" autoWidth="false" [style]="{'width':'75%'}" [options]="coursesHauptgruppe"
@@ -25,7 +27,9 @@
                     <p-dropdown placeholder="Umfrage auswählen" (onChange)="pollVergleichsgruppeSelected()" autoWidth="false" [style]="{'width':'100%'}"
                         [options]="umfragen" [(ngModel)]="selectedVergleichsumfrage"></p-dropdown>
                 </p>
-                <div class="first">Klassen [{{coursesVergleichsgruppe.length}}] (RegEx)</div>
+                <div class="first">
+                    <img class="info" src="../assets/Info.png" (click)="showHelp()">Klassen [{{coursesVergleichsgruppe.length}}] (
+                    <i>RegEx</i>>)</div>
                 <p style="text-align:left;">
                     <span>
                         <p-dropdown editable="true" placeholder="Klasse(n) auswählen" autoWidth="false" [style]="{'width':'75%'}" [options]="coursesVergleichsgruppe"
@@ -41,8 +45,24 @@
     <ng-template pTemplate="body" let-rowIndex="rowIndex" let-questionData>
         <tr>
             <td class='questions'>{{questions[rowIndex].text}}</td>
-            <td><p-chart type="pie" [data]="this.modelHauptgruppen[rowIndex]"></p-chart></td>
-            <td><p-chart type="pie" [data]="this.modelVergleichsgruppen[rowIndex]"></p-chart></td>
+            <td>
+                <div class="sumContainer">
+                    <span class="sum"> ∑={{this.modelHauptgruppen[rowIndex].totalCount}}</span>
+                </div>
+                <div class="averageContainer">
+                    <span class="average">Ø={{this.modelHauptgruppen[rowIndex].average}}</span>
+                </div>
+                <p-chart type="pie" [data]="this.modelHauptgruppen[rowIndex]"></p-chart>
+            </td>
+            <td>
+                <div class="sumContainer">
+                    <span class="sum"> ∑={{this.modelVergleichsgruppen[rowIndex].totalCount}}</span>
+                </div>
+                <div class="averageContainer">
+                    <span class="average">Ø={{this.modelVergleichsgruppen[rowIndex].average}}</span>
+                </div>
+                <p-chart type="pie" [data]="this.modelVergleichsgruppen[rowIndex]"></p-chart>
+            </td>
         </tr>
     </ng-template>
 </p-table>
@@ -59,7 +79,7 @@
         <h4>{{selectedHauptKlasse}}</h4>
     </span>
 </p-dialog>
-<p-dialog header="Auswertung Vergleichsgruppe" [(visible)]="displayVergleich">
+<p-dialog header="Auswertung Vergleichsgruppe" [width]="600" [(visible)]="displayVergleich">
     <span style=" float:left;">
         <img src="../assets/spinner.gif" alt="">
     </span>
@@ -70,4 +90,20 @@
         <p>Auswertung für Klassen</p>
         <h4>{{selectedVergleichsklasse}}</h4>
     </span>
+</p-dialog>
+<p-dialog header="Hilfe zur Auswertung" [width]="600" [(visible)]="displayHilfe">
+    <strong>Die Gruppen/Klassen für die Auswertung können entweder über das DropDown Element gewählt werden, oder aber als regulärer
+        Ausdruck eingetragen werden. U.A. folgende Einträge sind möglich: </strong>
+    <ul>
+        <li>
+            <strong>FIAE17</strong>....alle AE-Klassen des Jahrgangs 17</li>
+        <li>
+            <strong>FIAE</strong>.... alle AE-Klassen</li>
+        <li>
+            <strong>FI</strong>.... alle Klassen die mit FI beginnen, also sowohl FISI als auch FIAE</li>
+        <li>
+            <strong>(.)</strong>.... alle Klassen</li>
+        <li>
+            <strong>(FI|SYE|SYK|IFK|FSI]</strong>.... alle Klassen der IT-Abteilung</li>
+    </ul>
 </p-dialog>

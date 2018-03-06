@@ -95,6 +95,7 @@ Teilnehmeransicht (Durchführen der Umfrage)
 ![voting](voting.PNG "Voting for a Poll")
 
 Auswertung der Umfrage
+![eval](eval.gif "Evaluation of a Poll")
 
 
 

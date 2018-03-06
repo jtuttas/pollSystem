@@ -6,3 +6,37 @@ h1 {
     text-align: left;
     font-size: 12px;   
 }
+
+.info {
+    float: left;
+margin-right: 10px;
+    cursor: pointer;
+}
+
+.sumContainer {
+    width:49%;
+    float: left;
+}
+.sum {
+    border-radius: 8px;
+    background: darkmagenta;
+    padding: 2px;
+    color: white;
+    padding-left: 5px;
+    padding-right: 5px;
+
+}
+.averageContainer {
+    width: 49%;
+    text-align: right;
+    float: right;
+}
+.average {
+    border-radius: 8px;
+    background: darkgreen;
+    padding: 2px;
+    color: white;
+    padding-left: 5px;
+    padding-right: 5px;
+
+}

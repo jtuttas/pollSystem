@@ -9,7 +9,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 
 
-//CORS middleware
+//CORS middleware 
 var allowCrossDomain = function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');

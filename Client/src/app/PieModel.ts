@@ -18,13 +18,23 @@ export class PieModel {
 export class Dataset{
     data:number[]=[]
     backgroundColor:string[]= [
-        "#FF6384",
-        "#36A2EB",
-        "#FFCE56"
+        "#F44336",
+        "#9C27B0",
+        "#2196F3",
+        "#009688",
+        "#CDDC39",
+        "#FFEB3B",
+        "#FFC107",
+        "#FF5722"
     ]
     hoverBackgroundColor:string[]= [
-        "#FF6384",
-        "#36A2EB",
-        "#FFCE56"
+        "#F44336",
+        "#9C27B0",
+        "#2196F3",
+        "#009688",
+        "#CDDC39",
+        "#FFEB3B",
+        "#FFC107",
+        "#FF5722"
     ]
 }
