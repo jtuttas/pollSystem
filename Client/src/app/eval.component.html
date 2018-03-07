@@ -1,11 +1,11 @@
-<p-table [value]="questions">
+<p-table [value]="questionData">
     <ng-template pTemplate="header">
         <tr>
             <th>Fragebogen: {{titel}}</th>
             <th>Hauptgruppe
                 <p class="first">Umfragen</p>
                 <p>
-                    <p-dropdown placeholder="Umfrage auswählen" (onChange)="pollHauptgruppeSelected()" autoWidth="false" [style]="{'width':'100%'}"
+                    <p-dropdown placeholder="Umfrage auswählen" optionLabel="_id" (onChange)="pollHauptgruppeSelected()" autoWidth="false" [style]="{'width':'100%'}"
                         [options]="umfragen" [(ngModel)]="selectedHauptumfrage"></p-dropdown>
                 </p>
                 <div class="first">
@@ -24,12 +24,12 @@
             <th>Vergleichsgruppe
                 <p class="first">Umfragen</p>
                 <p>
-                    <p-dropdown placeholder="Umfrage auswählen" (onChange)="pollVergleichsgruppeSelected()" autoWidth="false" [style]="{'width':'100%'}"
+                    <p-dropdown placeholder="Umfrage auswählen" optionLabel="_id" (onChange)="pollVergleichsgruppeSelected()" autoWidth="false" [style]="{'width':'100%'}"
                         [options]="umfragen" [(ngModel)]="selectedVergleichsumfrage"></p-dropdown>
                 </p>
                 <div class="first">
                     <img class="info" src="../assets/Info.png" (click)="showHelp()">Klassen [{{coursesVergleichsgruppe.length}}] (
-                    <i>RegEx</i>>)</div>
+                    <i>RegEx</i>)</div>
                 <p style="text-align:left;">
                     <span>
                         <p-dropdown editable="true" placeholder="Klasse(n) auswählen" autoWidth="false" [style]="{'width':'75%'}" [options]="coursesVergleichsgruppe"
@@ -42,7 +42,7 @@
             </th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-rowIndex="rowIndex" let-questionsData>
+    <ng-template pTemplate="body" let-rowIndex="rowIndex" let-questionData>
         <tr>
             <td class='questions'>{{questions[rowIndex].text}}</td>
             <td>

@@ -12,6 +12,7 @@ import { EvalResult } from './EvalResult';
 import { ChartModule } from 'primeng/chart';
 import { PieModel } from './PieModel';
 import { forEach } from '@angular/router/src/utils/collection';
+import { Umfrage } from './Umfrage';
 @Component({
     selector: 'eval',
     templateUrl: './eval.component.html',
@@ -23,13 +24,13 @@ export class EvalComponent implements OnInit {
     private polltype: string;
     msgs: Message[] = [];
     answers: Answer[];
-    selectedHauptumfrage: any;
     private questions: Question[] = [];
     
     private questionData: Question[] = [];
     
-    selectedVergleichsumfrage: any;
-    umfragen: SelectItem[];
+    selectedHauptumfrage: Umfrage;
+    selectedVergleichsumfrage: Umfrage;
+    umfragen: Umfrage[];
     coursesHauptgruppe: SelectItem[] = new Array();
     coursesVergleichsgruppe: SelectItem[] = new Array();
     selectedHauptKlasse: any;
@@ -52,7 +53,7 @@ export class EvalComponent implements OnInit {
             }
             else {
                 this.displayHaupt = true;
-                this.evalservice.getEvaluation(this.polltype, this.selectedHauptumfrage, this.selectedHauptKlasse).subscribe(
+                this.evalservice.getEvaluation(this.polltype, this.selectedHauptumfrage._id, this.selectedHauptKlasse).subscribe(
                     data => {
                         console.log("Empfange Auswertung: " + JSON.stringify(data));
                         let evaluation: EvalResult[];
@@ -78,7 +79,7 @@ export class EvalComponent implements OnInit {
             }
             else {
                 this.displayVergleich = true;
-                this.evalservice.getEvaluation(this.polltype, this.selectedVergleichsumfrage, this.selectedVergleichsklasse).subscribe(
+                this.evalservice.getEvaluation(this.polltype, this.selectedVergleichsumfrage._id, this.selectedVergleichsklasse).subscribe(
                     data => {
                         console.log("Empfange Auswertung: " + JSON.stringify(data));
                         let evaluation: EvalResult[];
@@ -146,7 +147,10 @@ export class EvalComponent implements OnInit {
     pollHauptgruppeSelected() {
         if (this.selectedHauptumfrage) {
             console.log("Wähle Hauptgruppe " + this.selectedHauptumfrage);
-            this.evalservice.getCourses(this.polltype, this.selectedHauptumfrage).subscribe(
+            if (this.selectedHauptumfrage.enable) {
+                this.messageService.add({ severity: 'warning', summary: this.selectedHauptumfrage._id, detail: "ist noch aktiv!" });                
+            }
+            this.evalservice.getCourses(this.polltype, this.selectedHauptumfrage._id).subscribe(
                 data => {
                     console.log("Liste der Kurse f. die Hauptgruppe Umfrage:" + JSON.stringify(data));
                     this.coursesHauptgruppe = [
@@ -154,7 +158,7 @@ export class EvalComponent implements OnInit {
                     ];
                     this.selectedHauptKlasse = this.coursesHauptgruppe[0];
                     if (data.length == 0) {
-                        this.messageService.add({ severity: 'warning', summary: this.selectedHauptumfrage, detail: "enthält keine Klassen" });
+                        this.messageService.add({ severity: 'warning', summary: this.selectedHauptumfrage._id, detail: "enthält keine Klassen" });
 
                     }
                     else {
@@ -174,16 +178,18 @@ export class EvalComponent implements OnInit {
     }
     pollVergleichsgruppeSelected() {
         if (this.selectedVergleichsumfrage) {
-            console.log("Wähle Vergleichsgruppe " + this.selectedVergleichsumfrage);
-            this.evalservice.getCourses(this.polltype, this.selectedVergleichsumfrage).subscribe(
+            console.log("Wähle Vergleichsgruppe " + this.selectedVergleichsumfrage._id);
+            if (this.selectedVergleichsumfrage.enable) {
+                this.messageService.add({ severity: 'warning', summary: this.selectedVergleichsumfrage._id, detail: "ist noch aktiv!" });                
+            }
+            this.evalservice.getCourses(this.polltype, this.selectedVergleichsumfrage._id).subscribe(
                 data => {
                     console.log("Liste der Kurse f. die Vergleichsgruppe Umfrage:" + JSON.stringify(data));
                     this.coursesVergleichsgruppe = [
-                        // { label: 'Klasse auswählen', value: null }
                     ];
                     this.selectedVergleichsklasse = this.coursesVergleichsgruppe[0];
                     if (data.length == 0) {
-                        this.messageService.add({ severity: 'warning', summary: this.selectedVergleichsumfrage, detail: "enthält keine Klassen" });
+                        this.messageService.add({ severity: 'warning', summary: this.selectedVergleichsumfrage._id, detail: "enthält keine Klassen" });
                     }
                     else {
                         var n = 0;
@@ -214,13 +220,8 @@ export class EvalComponent implements OnInit {
                     this.umfragen = [
                         //  { label: 'Umfrage Auswählen', value: null }
                     ];
-                    var n = 0;
                     data.forEach(element => {
-                        var obj = { label: element, value: element };
-                        //console.log("Füge Umfrage hinzu:" + JSON.stringify(obj));
-
-                        this.umfragen.push(obj);
-                        n++;
+                        this.umfragen.push(element);
                     });
                 },
                 err => {
@@ -248,7 +249,7 @@ export class EvalComponent implements OnInit {
                                 this.modelVergleichsgruppen = this.generateDatamodel(null);
                                 this.modelHauptgruppen = this.generateDatamodel(null);
                                 //console.log("Hauptgruppe="+JSON.stringify(this.modelHauptgruppen,null,4)); 
-                                this.questionData=new Array(5);                               
+                                this.questionData=new Array(this.questions.length);                               
                             }
                         },
                         err => {

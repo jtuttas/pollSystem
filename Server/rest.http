@@ -26,18 +26,9 @@ secret: 1234
     "answer": 5
 }
 
-### Abfragen der Klassen einer Umfrage im Format /course/{polltype}/{poll}
-GET http://{{host}}:3000/courses/bho/Umfrage HTTP/1.1
-Content-Type: application/json
-secret: 1234
 
 ### Abfragen aller Umfragen /polls/{polltype}
 GET http://{{host}}:3000/polls/bho HTTP/1.1
-Content-Type: application/json
-secret: 1234
-
-### Abfragen aller Fragen /questions/{polltype}
-GET http://{{host}}:3000/questions/bho HTTP/1.1
 Content-Type: application/json
 secret: 1234
 
@@ -46,7 +37,32 @@ GET http://{{host}}:3000/answers/bho HTTP/1.1
 Content-Type: application/json
 secret: 1234
 
-### Auswertung abfragen im Format {polltype}/{poll}/{course}. Wobei poll und course als RegEx ausgewretet werden
-GET http://{{host}}:3000/evaluate/bho/Umfrage1/FIAE17J HTTP/1.1
+### Abfragen aller Fragen /questions/{polltype}
+GET http://{{host}}:3000/questions/bho HTTP/1.1
 Content-Type: application/json
 secret: 1234
+
+
+### Authentifizieren beim Server f. Umfragen die mit Kennwort geschützt sind!
+# /polls/{polltype}/{poll}
+POST http://{{host}}:3000/polls/bho/Umfrage1 HTTP/1.1
+Content-Type: application/json
+secret: 1234
+
+{
+    "password": "geheim"
+}
+
+### Abfragen der Klassen einer Umfrage im Format /course/{polltype}/{poll}
+# Bei Umfragen die mit einem Kennwort geschützt sind muss das Secret
+# das Secret sein, welches durch eine Authentifizierung erzeugt wurde
+GET http://{{host}}:3000/courses/bho/Umfrage1 HTTP/1.1
+Content-Type: application/json
+secret: a47e1c0f-4d68-4ddf-b95e-45995419e7ca
+
+### Auswertung abfragen im Format {polltype}/{poll}/{course}. Wobei poll und course als RegEx ausgewretet werden
+# Bei Umfragen die mit einem Kennwort geschützt sind muss das Secret
+# das Secret sein, welches durch eine Authentifizierung erzeugt wurde
+GET http://{{host}}:3000/evaluate/bho/Umfrage1/FIAE17J HTTP/1.1
+Content-Type: application/json
+secret: a47e1c0f-4d68-4ddf-b95e-4599419e7ca
