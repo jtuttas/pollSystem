@@ -32,9 +32,14 @@ export class EvalService {
      * @param polltype Der Polltype 
      * @param poll Die Umfrage
      */
-    getCourses(polltype: string,poll:string) {
+    getCourses(polltype: string,poll:string,secret?:string) {
         var headers = new Headers();
-        headers.append("secret", Config.SECRET);
+        if (secret) {
+            headers.append("secret", secret);
+        }
+        else {
+            headers.append("secret", Config.SECRET);
+        }
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
         this.url = Config.SERVER + "courses/" + polltype+"/"+poll ;
@@ -51,9 +56,14 @@ export class EvalService {
      * @param course Die Klassen (darf RegEx sein)
      * 
      */
-    getEvaluation(polltype: string,poll:string,course:string) {
+    getEvaluation(polltype: string,poll:string,course:string,secret?:string) {
         var headers = new Headers();
-        headers.append("secret", Config.SECRET);
+        if (secret) {
+            headers.append("secret", secret);
+        }
+        else {
+            headers.append("secret", Config.SECRET);
+        }
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
         this.url = Config.SERVER + "evaluate/"+polltype+"/"+poll+"/"+course ;
@@ -62,6 +72,22 @@ export class EvalService {
             .map(this.extractData)
             .catch(this.handleError);
     }
+
+    auth(polltype: string,poll:string,password:string) {
+        var headers = new Headers();
+        headers.append("secret", Config.SECRET);
+        headers.append("Content-Type", "application/json;  charset=UTF-8");
+
+        this.url = Config.SERVER + "polls/"+polltype+"/"+poll;
+        console.log("AUTH  URL=" + this.url);
+        var body={
+            password:password
+        }
+        return this.http.post(this.url,JSON.stringify(body),{ headers: headers })
+            .map(this.extractData)
+            .catch(this.handleError);
+    }
+    
 
     private extractData(res: Response) {
         console.log("Receive Data: " + JSON.stringify(res.json()));

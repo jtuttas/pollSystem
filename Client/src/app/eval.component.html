@@ -106,6 +106,14 @@
         <li>
             <strong>(FI|SYE|SYK|IFK|FSI])</strong>.... alle Klassen der IT-Abteilung</li>
         <li>
-            <strong>(FISI[1-9][1-9]A|FISI[1-9][1-9]D)</strong>.... alle FISI Klassen der roten Blockschine</li>
+            <strong>(FISI[1-9][1-9]A|FISI[1-9][1-9]D)</strong>.... alle FISI Klassen der roten Blockschiene</li>
     </ul>
+</p-dialog>
+<p-dialog header="Authentifizierung" [width]="600" [(visible)]="displayAuth">
+    <p>Für den Zugriff auf die Umfrage ist ein Kennwort erforderlich</p>
+    <br>
+    <input type="password" [(ngModel)]="password"/>
+    <p-footer>
+        <button type="button" pButton icon="fa-check" (click)="auth()" label="OK"></button>
+    </p-footer>
 </p-dialog>

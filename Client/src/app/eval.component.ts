@@ -13,6 +13,7 @@ import { ChartModule } from 'primeng/chart';
 import { PieModel } from './PieModel';
 import { forEach } from '@angular/router/src/utils/collection';
 import { Umfrage } from './Umfrage';
+import { PasswordModule } from 'primeng/password';
 @Component({
     selector: 'eval',
     templateUrl: './eval.component.html',
@@ -25,11 +26,12 @@ export class EvalComponent implements OnInit {
     msgs: Message[] = [];
     answers: Answer[];
     private questions: Question[] = [];
-    
+
     private questionData: Question[] = [];
-    
+
     selectedHauptumfrage: Umfrage;
     selectedVergleichsumfrage: Umfrage;
+    selectedUmfrage: Umfrage;
     umfragen: Umfrage[];
     coursesHauptgruppe: SelectItem[] = new Array();
     coursesVergleichsgruppe: SelectItem[] = new Array();
@@ -38,13 +40,83 @@ export class EvalComponent implements OnInit {
     displayHaupt: boolean = false;
     displayVergleich: boolean = false;
     displayHilfe: boolean = false;
+    displayAuth: boolean = false;
     modelHauptgruppen: PieModel[] = [];
     modelVergleichsgruppen: PieModel[] = [];
+    password: string = "";
 
 
     constructor(private messageService: MessageService, private route: ActivatedRoute, private pollservice: PollService, private evalservice: EvalService, private router: Router) {
     }
 
+    auth() {
+        console.log("Auth for Password=" + this.password);
+        this.evalservice.auth(this.polltype, this.selectedUmfrage._id, this.password).subscribe(
+            data => {
+                console.log("Auth receive:" + JSON.stringify(data));
+                this.displayAuth = false;
+                this.selectedUmfrage.secret = data.secret;
+                console.log("Selected Umfrage="+JSON.stringify(this.selectedUmfrage));
+                
+                this.getCourses(this.polltype,this.selectedUmfrage,
+                    data => {
+                        if (this.selectedUmfrage === this.selectedHauptumfrage) {
+                            console.log("War Hauptumfrage");
+                            this.coursesHauptgruppe=data;
+                            
+                        }
+                        else {
+                            console.log("War Vergleichsumfrage");
+                            this.coursesVergleichsgruppe=data;
+                        }
+                    },
+                    err => {
+                        console.log("Fehler:" + err);
+                        this.messageService.add({ severity: 'warning', summary: this.selectedUmfrage._id, detail: err });
+                    }
+                );
+            },
+            err => {
+                console.log("Auth Error:" + JSON.stringify(err));
+                this.displayAuth = false;
+                if (this.selectedUmfrage === this.selectedHauptumfrage) {
+                    console.log("War Hauptumfrage");
+                    delete this.selectedHauptumfrage;                    
+                }
+                else {
+                    console.log("War Vergleichsumfrage");
+                    delete this.selectedVergleichsumfrage;
+                    
+                }
+                this.messageService.add({ severity: 'error', summary: "Fehler", detail: "Das Kennwort ist falsch!" });
+
+            }
+        )
+    }
+
+    getCourses(polltype: string,umfrage:Umfrage, set: Function,err: Function) {
+        this.evalservice.getCourses(polltype, umfrage._id, umfrage.secret).subscribe(
+            data => {
+                console.log("Liste der Kurse f. die Hauptgruppe Umfrage:" + JSON.stringify(data));
+                var result: SelectItem[] = [];
+                if (data.length == 0) {
+                    err("enthält keine Klassen");
+                }
+                else {
+                    data.forEach(element => {
+                        var obj = { label: element, value: element };
+                        result.push(obj);
+                    });
+                }
+                console.log("result=" + JSON.stringify(result));
+                set(result);
+            },
+            err => {
+                console.log("Fehler!! " + JSON.stringify(err));
+                err(err);
+            }
+        );
+    }
     startHaupt() {
         if (this.selectedHauptKlasse) {
             console.log("Haut Klassen geählt: " + this.selectedHauptKlasse);
@@ -53,7 +125,7 @@ export class EvalComponent implements OnInit {
             }
             else {
                 this.displayHaupt = true;
-                this.evalservice.getEvaluation(this.polltype, this.selectedHauptumfrage._id, this.selectedHauptKlasse).subscribe(
+                this.evalservice.getEvaluation(this.polltype, this.selectedHauptumfrage._id, this.selectedHauptKlasse, this.selectedHauptumfrage.secret).subscribe(
                     data => {
                         console.log("Empfange Auswertung: " + JSON.stringify(data));
                         let evaluation: EvalResult[];
@@ -79,7 +151,7 @@ export class EvalComponent implements OnInit {
             }
             else {
                 this.displayVergleich = true;
-                this.evalservice.getEvaluation(this.polltype, this.selectedVergleichsumfrage._id, this.selectedVergleichsklasse).subscribe(
+                this.evalservice.getEvaluation(this.polltype, this.selectedVergleichsumfrage._id, this.selectedVergleichsklasse, this.selectedVergleichsumfrage.secret).subscribe(
                     data => {
                         console.log("Empfange Auswertung: " + JSON.stringify(data));
                         let evaluation: EvalResult[];
@@ -111,20 +183,20 @@ export class EvalComponent implements OnInit {
         var n = 0;
         if (evaluation) {
             evaluation.forEach(evalElement => {
-                var sum=0;
-                var number=0;
+                var sum = 0;
+                var number = 0;
                 console.log("Bearbeite Frage " + evalElement._id + " mit text:" + evalElement.text);
                 theModel[n].datasets[0].data = [];
                 this.answers.forEach(element => {
                     var foundCount = this.findCount(evalElement, element.item);
-                    if (element.item>0) {
-                        sum+=element.item*foundCount;
-                        number+=foundCount;
+                    if (element.item > 0) {
+                        sum += element.item * foundCount;
+                        number += foundCount;
                     }
                     theModel[n].datasets[0].data.push(foundCount);
                 });
-                theModel[n].totalCount=number;
-                theModel[n].average=Math.round((sum/number) * 100) / 100;
+                theModel[n].totalCount = number;
+                theModel[n].average = Math.round((sum / number) * 100) / 100;
                 //console.log("Antworten sind: " + JSON.stringify(theModel[n].datasets[0].data));
                 n++;
             });
@@ -146,66 +218,58 @@ export class EvalComponent implements OnInit {
 
     pollHauptgruppeSelected() {
         if (this.selectedHauptumfrage) {
-            console.log("Wähle Hauptgruppe " + this.selectedHauptumfrage);
             if (this.selectedHauptumfrage.enable) {
-                this.messageService.add({ severity: 'warning', summary: this.selectedHauptumfrage._id, detail: "ist noch aktiv!" });                
+                this.messageService.add({ severity: 'warning', summary: this.selectedHauptumfrage._id, detail: "ist noch aktiv!" });
             }
-            this.evalservice.getCourses(this.polltype, this.selectedHauptumfrage._id).subscribe(
-                data => {
-                    console.log("Liste der Kurse f. die Hauptgruppe Umfrage:" + JSON.stringify(data));
-                    this.coursesHauptgruppe = [
-                        // { label: 'Klasse auswählen', value: null }
-                    ];
-                    this.selectedHauptKlasse = this.coursesHauptgruppe[0];
-                    if (data.length == 0) {
-                        this.messageService.add({ severity: 'warning', summary: this.selectedHauptumfrage._id, detail: "enthält keine Klassen" });
-
+            if (this.selectedHauptumfrage.passwordRequired && this.selectedHauptumfrage.secret == null) {
+                this.displayAuth = true;
+                this.selectedUmfrage = this.selectedHauptumfrage;
+            }
+            else {
+                console.log("Wähle Hauptgruppe " + this.selectedHauptumfrage);
+                this.getCourses(this.polltype,this.selectedHauptumfrage,
+                    data => {
+                        this.coursesHauptgruppe = data;
+                    },
+                    err => {
+                        console.log("Fehler:" + err);
+                        this.messageService.add({ severity: 'warning', summary: this.selectedHauptumfrage._id, detail: err });
                     }
-                    else {
-                        var n = 0;
-                        data.forEach(element => {
-                            var obj = { label: element, value: element };
-                            this.coursesHauptgruppe.push(obj);
-                            n++;
-                        });
-                    }
-                },
-                err => {
-                    console.log("Fehler!! " + JSON.stringify(err));
-                }
-            );
+                )
+            }
         }
     }
+
     pollVergleichsgruppeSelected() {
         if (this.selectedVergleichsumfrage) {
             console.log("Wähle Vergleichsgruppe " + this.selectedVergleichsumfrage._id);
             if (this.selectedVergleichsumfrage.enable) {
-                this.messageService.add({ severity: 'warning', summary: this.selectedVergleichsumfrage._id, detail: "ist noch aktiv!" });                
+                this.messageService.add({ severity: 'warning', summary: this.selectedVergleichsumfrage._id, detail: "ist noch aktiv!" });
             }
-            this.evalservice.getCourses(this.polltype, this.selectedVergleichsumfrage._id).subscribe(
-                data => {
-                    console.log("Liste der Kurse f. die Vergleichsgruppe Umfrage:" + JSON.stringify(data));
-                    this.coursesVergleichsgruppe = [
-                    ];
-                    this.selectedVergleichsklasse = this.coursesVergleichsgruppe[0];
-                    if (data.length == 0) {
-                        this.messageService.add({ severity: 'warning', summary: this.selectedVergleichsumfrage._id, detail: "enthält keine Klassen" });
+            if (this.selectedVergleichsumfrage.passwordRequired && this.selectedVergleichsumfrage.secret == null) {
+                this.displayAuth = true;
+                console.log("Passwortdialog anzeigen");
+                this.selectedUmfrage = this.selectedVergleichsumfrage;
+            }
+            else {
+                console.log("Kein Dialog Notwendig!");
+                this.getCourses(this.polltype,this.selectedVergleichsumfrage,
+                    data => {
+                        this.coursesVergleichsgruppe = data;
+                    },
+                    err => {
+                        console.log("Fehler!");
+                        this.messageService.add({ severity: 'warning', summary: this.selectedVergleichsumfrage._id, detail: err });
                     }
-                    else {
-                        var n = 0;
-                        data.forEach(element => {
-                            var obj = { label: element, value: element };
-                            this.coursesVergleichsgruppe.push(obj);
-                            n++;
-                        });
-                    }
-                },
-                err => {
-                    console.log("Fehler!! " + JSON.stringify(err));
-                }
-            );
+                )
+            }
         }
     }
+
+
+
+
+
     ngOnInit() {
         this.sub = this.route.params.subscribe(params => {
             this.titel = params['polltype'];
@@ -239,7 +303,7 @@ export class EvalComponent implements OnInit {
                     this.pollservice.getAnswers(this.polltype).subscribe(
                         data2 => {
                             data.forEach(element => {
-                                this.questions.push(new Question(""+element._id,""+element.text));
+                                this.questions.push(new Question("" + element._id, "" + element.text));
                             });
                             this.answers = data2;
                             if (data2.length == 0) {
@@ -249,25 +313,25 @@ export class EvalComponent implements OnInit {
                                 this.modelVergleichsgruppen = this.generateDatamodel(null);
                                 this.modelHauptgruppen = this.generateDatamodel(null);
                                 //console.log("Hauptgruppe="+JSON.stringify(this.modelHauptgruppen,null,4)); 
-                                this.questionData=new Array(this.questions.length);                               
+                                this.questionData = new Array(this.questions.length);
                             }
                         },
                         err => {
                             console.log("Fehler loadAnswer()");
                         }
                     );
-                    
+
                 },
                 err => {
                     console.log("Fehler loadquestionModel()");
                 }
             );
-            
+
         });
-       
+
     }
 
     showHelp() {
-        this.displayHilfe=true;
+        this.displayHilfe = true;
     }
 }
