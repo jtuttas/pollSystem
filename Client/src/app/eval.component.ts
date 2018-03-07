@@ -237,10 +237,8 @@ export class EvalComponent implements OnInit {
                     }
                     this.pollservice.getAnswers(this.polltype).subscribe(
                         data2 => {
-                            var i=0;
                             data.forEach(element => {
                                 this.questions.push(new Question(""+element._id,""+element.text));
-                                i++;
                             });
                             this.answers = data2;
                             if (data2.length == 0) {
@@ -249,7 +247,7 @@ export class EvalComponent implements OnInit {
                             else {
                                 this.modelVergleichsgruppen = this.generateDatamodel(null);
                                 this.modelHauptgruppen = this.generateDatamodel(null);
-                                console.log("Hauptgruppe="+JSON.stringify(this.modelHauptgruppen,null,4)); 
+                                //console.log("Hauptgruppe="+JSON.stringify(this.modelHauptgruppen,null,4)); 
                                 this.questionData=new Array(5);                               
                             }
                         },

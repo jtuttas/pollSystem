@@ -268,7 +268,7 @@ router.get('/courses/:polltype/:poll', function (req, res, next) {
  * Alle Umfragen abfragen
  */
 router.get('/polls/:polltype', function (req, res, next) {
-  console.log('GET Courses von polltype='+req.params.polltype);
+  console.log('GET Polls von polltype='+req.params.polltype);
   console.log("Header Secret:" + req.header("secret"));
 
   res.setHeader('Content-Type', 'application/json');
@@ -277,12 +277,18 @@ router.get('/polls/:polltype', function (req, res, next) {
     return;
   }
 
-  dbo.collection("C"+req.params.polltype).distinct("_id", function (err, result) {
+  dbo.collection("C"+req.params.polltype).find().toArray(function (err, result) {
     if (err) {
       console.log("Recieve Error:" + err);
     }
     else {
       console.log("Get Courses returns " + JSON.stringify(result));
+      result.forEach(element => {
+        if (element.password) {
+          delete element.password;
+          element["passwordRequired"]=true;
+        }
+      });
       res.send(JSON.stringify(result));
     }
   })

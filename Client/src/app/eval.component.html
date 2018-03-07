@@ -42,7 +42,7 @@
             </th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-rowIndex="rowIndex" let-questionData>
+    <ng-template pTemplate="body" let-rowIndex="rowIndex" let-questionsData>
         <tr>
             <td class='questions'>{{questions[rowIndex].text}}</td>
             <td>
@@ -104,6 +104,8 @@
         <li>
             <strong>(.)</strong>.... alle Klassen</li>
         <li>
-            <strong>(FI|SYE|SYK|IFK|FSI]</strong>.... alle Klassen der IT-Abteilung</li>
+            <strong>(FI|SYE|SYK|IFK|FSI])</strong>.... alle Klassen der IT-Abteilung</li>
+        <li>
+            <strong>(FISI[1-9][1-9]A|FISI[1-9][1-9]D)</strong>.... alle FISI Klassen der roten Blockschine</li>
     </ul>
 </p-dialog>
