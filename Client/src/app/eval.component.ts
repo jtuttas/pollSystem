@@ -49,6 +49,21 @@ export class EvalComponent implements OnInit {
     constructor(private messageService: MessageService, private route: ActivatedRoute, private pollservice: PollService, private evalservice: EvalService, private router: Router) {
     }
 
+    cancel() {
+        console.log("Cancel");
+        
+        this.displayAuth = false;
+        if (this.selectedUmfrage === this.selectedHauptumfrage) {
+            console.log("War Hauptumfrage");
+            delete this.selectedHauptumfrage;
+        }
+        else {
+            console.log("War Vergleichsumfrage");
+            delete this.selectedVergleichsumfrage;
+
+        }
+    }
+
     auth() {
         console.log("Auth for Password=" + this.password);
         this.evalservice.auth(this.polltype, this.selectedUmfrage._id, this.password).subscribe(
@@ -56,18 +71,18 @@ export class EvalComponent implements OnInit {
                 console.log("Auth receive:" + JSON.stringify(data));
                 this.displayAuth = false;
                 this.selectedUmfrage.secret = data.secret;
-                console.log("Selected Umfrage="+JSON.stringify(this.selectedUmfrage));
-                
-                this.getCourses(this.polltype,this.selectedUmfrage,
+                console.log("Selected Umfrage=" + JSON.stringify(this.selectedUmfrage));
+
+                this.getCourses(this.polltype, this.selectedUmfrage,
                     data => {
                         if (this.selectedUmfrage === this.selectedHauptumfrage) {
                             console.log("War Hauptumfrage");
-                            this.coursesHauptgruppe=data;
-                            
+                            this.coursesHauptgruppe = data;
+
                         }
                         else {
                             console.log("War Vergleichsumfrage");
-                            this.coursesVergleichsgruppe=data;
+                            this.coursesVergleichsgruppe = data;
                         }
                     },
                     err => {
@@ -81,12 +96,12 @@ export class EvalComponent implements OnInit {
                 this.displayAuth = false;
                 if (this.selectedUmfrage === this.selectedHauptumfrage) {
                     console.log("War Hauptumfrage");
-                    delete this.selectedHauptumfrage;                    
+                    delete this.selectedHauptumfrage;
                 }
                 else {
                     console.log("War Vergleichsumfrage");
                     delete this.selectedVergleichsumfrage;
-                    
+
                 }
                 this.messageService.add({ severity: 'error', summary: "Fehler", detail: "Das Kennwort ist falsch!" });
 
@@ -94,7 +109,7 @@ export class EvalComponent implements OnInit {
         )
     }
 
-    getCourses(polltype: string,umfrage:Umfrage, set: Function,err: Function) {
+    getCourses(polltype: string, umfrage: Umfrage, set: Function, err: Function) {
         this.evalservice.getCourses(polltype, umfrage._id, umfrage.secret).subscribe(
             data => {
                 console.log("Liste der Kurse f. die Hauptgruppe Umfrage:" + JSON.stringify(data));
@@ -227,7 +242,7 @@ export class EvalComponent implements OnInit {
             }
             else {
                 console.log("Wähle Hauptgruppe " + this.selectedHauptumfrage);
-                this.getCourses(this.polltype,this.selectedHauptumfrage,
+                this.getCourses(this.polltype, this.selectedHauptumfrage,
                     data => {
                         this.coursesHauptgruppe = data;
                     },
@@ -253,7 +268,7 @@ export class EvalComponent implements OnInit {
             }
             else {
                 console.log("Kein Dialog Notwendig!");
-                this.getCourses(this.polltype,this.selectedVergleichsumfrage,
+                this.getCourses(this.polltype, this.selectedVergleichsumfrage,
                     data => {
                         this.coursesVergleichsgruppe = data;
                     },

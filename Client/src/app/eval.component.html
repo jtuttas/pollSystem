@@ -24,8 +24,8 @@
             <th>Vergleichsgruppe
                 <p class="first">Umfragen</p>
                 <p>
-                    <p-dropdown placeholder="Umfrage auswählen" optionLabel="_id" (onChange)="pollVergleichsgruppeSelected()" autoWidth="false" [style]="{'width':'100%'}"
-                        [options]="umfragen" [(ngModel)]="selectedVergleichsumfrage"></p-dropdown>
+                    <p-dropdown placeholder="Umfrage auswählen" optionLabel="_id" (onChange)="pollVergleichsgruppeSelected()" autoWidth="false"
+                        [style]="{'width':'100%'}" [options]="umfragen" [(ngModel)]="selectedVergleichsumfrage"></p-dropdown>
                 </p>
                 <div class="first">
                     <img class="info" src="../assets/Info.png" (click)="showHelp()">Klassen [{{coursesVergleichsgruppe.length}}] (
@@ -109,11 +109,15 @@
             <strong>(FISI[1-9][1-9]A|FISI[1-9][1-9]D)</strong>.... alle FISI Klassen der roten Blockschiene</li>
     </ul>
 </p-dialog>
-<p-dialog header="Authentifizierung" [width]="600" [(visible)]="displayAuth">
-    <p>Für den Zugriff auf die Umfrage ist ein Kennwort erforderlich</p>
+<p-dialog header="Authentifizierung" [width]="350" [(visible)]="displayAuth" [closable]="false">
+    <p>Für den Zugriff auf die Umfrage ist ein Kennwort erforderlich!</p>
     <br>
-    <input type="password" [(ngModel)]="password"/>
+    <div class="passwordContainer">
+        <img class="keysymbol" src="../assets/key.png">
+        <input class="password" type="password" [(ngModel)]="password" />
+    </div>
     <p-footer>
         <button type="button" pButton icon="fa-check" (click)="auth()" label="OK"></button>
+        <button type="button" pButton icon="fa-close" (click)="cancel()" label="Cancel" class="ui-button-warning"></button>
     </p-footer>
 </p-dialog>

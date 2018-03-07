@@ -20,6 +20,7 @@ import {ButtonModule} from 'primeng/button';
 import {DialogModule} from 'primeng/dialog';
 import {ChartModule} from 'primeng/chart';
 import {PasswordModule} from 'primeng/password';
+import {InputTextModule} from 'primeng/inputtext';
 @NgModule({
   declarations: [
     AppComponent, VoteComponent, PageNotFoundComponent,EvalComponent
@@ -27,7 +28,7 @@ import {PasswordModule} from 'primeng/password';
   exports: [VoteComponent, PageNotFoundComponent],
   imports: [
     BrowserModule, routing, HttpModule, TableModule,RadioButtonModule,FormsModule,GrowlModule,DropdownModule,
-    BrowserAnimationsModule, ButtonModule, DialogModule,ChartModule,PasswordModule
+    BrowserAnimationsModule, ButtonModule, DialogModule,ChartModule,PasswordModule, InputTextModule
   ],
   
   providers: [PollService,MessageService,EvalService],

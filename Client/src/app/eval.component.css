@@ -9,8 +9,13 @@ h1 {
 
 .info {
     float: left;
-margin-right: 10px;
+    margin-right: 10px;
     cursor: pointer;
+}
+
+.keysymbol {
+    float:left;
+    padding: 10px;
 }
 
 .sumContainer {
@@ -39,4 +44,13 @@ margin-right: 10px;
     padding-left: 5px;
     padding-right: 5px;
 
+}
+.passwordContainer {
+    text-align: center;
+    background-color: beige;
+    border-radius: 12px;
+    height: 82px;
+}
+.password {
+    margin-top: 20px;
 }
