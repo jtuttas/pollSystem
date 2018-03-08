@@ -74,7 +74,7 @@
     <span style="float:right;">
         <br/>
         <p>Auswertung der Umfrage:</p>
-        <h4>{{selectedHauptumfrage}}</h4>
+        <h4 *ngIf="selectedHauptumfrage">{{selectedHauptumfrage._id}}</h4>
         <p>Auswertung für Klassen:</p>
         <h4>{{selectedHauptKlasse}}</h4>
     </span>
@@ -86,7 +86,7 @@
     <span style="float:right;">
         <br/>
         <p>Auswertung der Umfrage:</p>
-        <h4>{{selectedVergleichsumfrage}}</h4>
+        <h4 *ngIf="selectedVergleichsumfrage">{{selectedVergleichsumfrage._id}}</h4>
         <p>Auswertung für Klassen</p>
         <h4>{{selectedVergleichsklasse}}</h4>
     </span>

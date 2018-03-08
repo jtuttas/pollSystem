@@ -155,6 +155,14 @@ export class EvalComponent implements OnInit {
                 );
             }
         }
+        else {
+            if (!this.selectedHauptumfrage) {
+                this.messageService.add({ severity: 'info', summary: "Info", detail: "Bitte zunächst eine Umfrage wählen!" });
+            }
+            else {
+                this.messageService.add({ severity: 'info', summary: "Info", detail: "Bitte eine Klasse oder RegEx wählen!" });
+            }
+        }
 
     }
 
@@ -182,6 +190,15 @@ export class EvalComponent implements OnInit {
 
             }
         }
+        else {
+            if (!this.selectedVergleichsumfrage) {
+                this.messageService.add({ severity: 'info', summary: "Info", detail: "Bitte zunächst eine Umfrage wählen!" });
+            }
+            else {
+                this.messageService.add({ severity: 'info', summary: "Info", detail: "Bitte eine Klasse oder RegEx wählen!" });
+            }
+        }
+
     }
 
     generateDatamodel(evaluation: EvalResult[]) {
