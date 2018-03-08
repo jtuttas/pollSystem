@@ -1,0 +1,28 @@
+<h1>DemoComponent</h1>
+<div class="parameters">
+    <h4>Polltype</h4>
+    Der Typt der Umfrage, also aus welchen Fragen und Antwortskalen die Umfrage besteht:
+    <strong>{{polltype}}</strong>
+    <h4>ID bzw. KEY</h4>
+    Der Key über den der Zugang erfolgt:
+    <strong>{{id}}</strong>
+    <h4>Name der Umfrage</h4>
+    Der Name der Umfrage, hier
+    <strong>{{poll}}</strong>
+    <h4>Bezeichnung der Klasse</h4>
+    <input id="input" type="text" size="30" pInputText [(ngModel)]="course">
+</div>
+<br>
+<button pButton type="button" (click)="generate()" label="Generate" class="ui-button-danger"></button>
+<button pButton type="button" (click)="newKey()" label="New" class="ui-button-success"></button>
+<p-dialog header="Ihre Zugangsdaten" [width]="400" [(visible)]="display">
+    <p>Sie erreichen die Umfrage über folgenden Link</p>
+    <div class="result">
+        <b><a target="_blank" href="http:vote/{{polltype}}/{{id}}">Zur Umfrage</a></b>
+    </div>
+    <p>Sie erreichen die Auswertung über folgenden Link</p>
+    <div class="result">
+        <b> <a target="_blank" href="http:eval/{{polltype}}">Zur Auswertung</a></b>
+    </div>
+</p-dialog>
+<p-growl [(value)]="msgs"></p-growl>

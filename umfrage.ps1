@@ -433,7 +433,7 @@ function Invite-Subscriber {
         [Parameter(Mandatory = $true,
             Position = 0,
             ValueFromPipelineByPropertyName = $true
-            )]
+        )]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         $EMail,
@@ -447,7 +447,7 @@ function Invite-Subscriber {
         [Parameter(Mandatory = $true,
             Position = 2,
             ValueFromPipelineByPropertyName = $true
-            )]
+        )]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         $ID,
@@ -456,7 +456,7 @@ function Invite-Subscriber {
         [Parameter(Mandatory = $true,
             Position = 3,
             ValueFromPipelineByPropertyName = $true
-            )]
+        )]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [String]$Poll,
@@ -525,5 +525,166 @@ function Invite-Subscriber {
             Send-MailMessage -BodyAsHtml $currBody -Encoding $utf8 -From $Sender -SmtpServer $server[0] -Credential $credentials -Subject $currSubject -To $EMail -UseSsl -Port $server[1]
             Write-Verbose "Invite $EMail to poll $Poll"
         }
+    }
+}
+
+<#
+.SYNOPSIS
+    Importiert Ergebnisse zu einer Umfrage oder generiert (Fake) Ergebnisse
+.DESCRIPTION
+    Importiert Ergebnisse zu einer Umfrage oder generiert (Fake) Ergebnisse
+.EXAMPLE
+    Import-Result -key abc -item 2 -questionID Q1 -polltype bho
+    Für den key wird wird bei der Frage Q1 der Item Wert 2 eingetragen
+.EXAMPLE
+    Import-Result -key abc -items -1,1,2,3,4 -polltype bho
+    Für den key wird wird bei allen Fragen der Umfrage zufällige Item Werte im Bereich -1 bis 4 eingetragen
+.EXAMPLE
+    "abc","abc" | Import-Result -items -1,1,2,3,4 -polltype bho
+    Für die keys wird wird bei allen Fragen der Umfrage zufällige Item Werte im Bereich -1 bis 4 eingetragen
+.EXAMPLE
+    Import-Excel c:\Temp\User.xlsx |New-Subscriber  -Poll "Umfrage1" -Polltype bho | Import-Result -items -1,1,2,3,4 -polltype bho
+    Die Benutzer in der Excel Tabelle werden angelegt und für alle Fragen der Umfrage ein zufälliger Wert
+    im Bereich von -1 bis 4 eingetragen.
+#>
+function Import-Result {
+    [CmdletBinding()]
+    Param (
+        # Key des Teilnehmers
+        [Parameter(Mandatory = $true,
+            Position = 0,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [alias("id")]
+        $key,        
+        # Item Wert des Teilnehmers
+        [Parameter(Mandatory = $true,
+            Position = 1,
+            ParameterSetName = "import")]
+        [int]$item,
+
+        # Items ist dieser Parameter gesetzt, so werden alle Fragen der Umfrage
+        # Für diesen Teilnehmer mit zufälligen Werten befüllt, die sich in disem
+        # Array befinden
+        [Parameter(Mandatory = $true,
+            Position = 1,
+            ParameterSetName = "fake")]
+        [int[]]$items,
+
+        
+        # ID der Frage
+        [Parameter(Mandatory = $true,
+            Position = 2,
+            ParameterSetName = "import")]
+        $questionID,
+        # Typ der Umfrage
+        [Parameter(Mandatory = $true,
+            Position = 3)]
+        $polltype,
+        # Umfrageserver:Port
+        [Parameter()]
+        $server = "http://localhost:3000",    
+        # Secret des Servers
+        [Parameter()]
+        $secret = "1234"    
+    )
+    
+    begin {
+        $headers = @{}
+        $headers["content-Type"] = "application/json"
+        $headers["secret"] = $secret;
+
+        $r = Invoke-RestMethod -Method Get -Uri "$server/questions/$polltype" -Headers $headers
+        $questions = @{};
+        $answers = @{};
+        if ($r.length -eq 0 ) {
+            Write-Error "Die Umfrage vom Typ $polltype enthält keine Fragen!"
+            break;
+        }
+        else {
+            foreach ($q in $r) {
+                $questions[$q._id] = $q;
+            }
+        }
+
+        $r = Invoke-RestMethod -Method Get -Uri "$server/answers/$polltype" -Headers $headers
+        if ($r.length -eq 0 ) {
+            Write-Error "Die Umfrage vom Typ $polltype enthält keine Antworten!"
+            break;
+        }
+        else {
+            foreach ($a in $r) {
+                $answers[$a._id] = $a;
+            }
+        }
+        Write-Verbose "Umfrage vom Type $polltype enthaelt $($questions.Count) Fragen und $($answers.Count) Antwortskalen"
+
+    }
+    
+    process {
+        if ($PSCmdlet.ParameterSetName -eq "import") {
+            Write-Verbose "Set is Import"
+            $found = $false;
+            foreach ($k in $answers.Keys) {
+                if ($answers[$k].item -eq $item) {
+                    $found = $true;
+                }
+            }
+            if ($questions[$questionID] -eq $null) {
+                Write-Warning "Frage mit ID $questionID nicht gefunden !"
+            }
+            elseif (-not $found) {
+                Write-Warning "Item Wert $item nicht in Antwortskalen vorhanden!"            
+            }
+            else {
+                try {
+                    $body = "" | Select-Object -Property "_id", "question", "answer"
+                    $body._id = $key
+                    $body.question = $questionID;
+                    $body.answer = $item
+                    $r=Invoke-RestMethod -Method Put -Uri "$server/quest/$polltype" -Headers $headers -Body (ConvertTo-Json $body) 
+                    $r=Invoke-RestMethod -Method Put -Uri "$server/quest/$polltype" -Headers $headers -Body (ConvertTo-Json $body) 
+                    if ($r.success -eq $false) {
+                        Write-Warning $r.msg
+                    }
+                }
+                catch {
+                    echo $_.Exception.GetType().FullName, $_.Exception.Message
+                }
+            }
+        }
+        elseif ($PSCmdlet.ParameterSetName -eq "fake") {
+            Write-Verbose "Set is fake"
+            $questions.Keys | ForEach-Object {
+                $index = Get-Random -Minimum 0 -Maximum $items.Count
+                $id=""
+                try {
+                    $body = "" | Select-Object -Property "_id", "question", "answer"
+                    if ($key.id) {
+                        $body._id = $key.id
+                        $id=$key.id
+                    }
+                    else {
+                        $body._id = $key
+                        $id=$key
+                    }
+                    $body.question = $questions[$_]._id;
+                    $body.answer = $items[$index]
+                    $r=Invoke-RestMethod -Method Put -Uri "$server/quest/$polltype" -Headers $headers -Body (ConvertTo-Json $body) 
+                    if ($r.success -eq $false) {
+                        Write-Warning $r.msg
+                    }
+                    Write-Verbose "FakeMode: Fuer Teilnehmer mit KEY ($id) Frage mit ID $($questions[$_]._id) beantwortet mit Item Wert $($items[$index])"
+                }
+                catch {
+                    echo $_.Exception.GetType().FullName, $_.Exception.Message
+                }
+            }
+        
+        }
+
+    }
+    
+    end {
     }
 }

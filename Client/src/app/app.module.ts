@@ -21,9 +21,10 @@ import {DialogModule} from 'primeng/dialog';
 import {ChartModule} from 'primeng/chart';
 import {PasswordModule} from 'primeng/password';
 import {InputTextModule} from 'primeng/inputtext';
+import { DemoComponent } from './demo.component';
 @NgModule({
   declarations: [
-    AppComponent, VoteComponent, PageNotFoundComponent,EvalComponent
+    AppComponent, VoteComponent, PageNotFoundComponent,EvalComponent,DemoComponent
   ],
   exports: [VoteComponent, PageNotFoundComponent],
   imports: [

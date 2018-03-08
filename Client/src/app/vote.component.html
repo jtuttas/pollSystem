@@ -10,7 +10,7 @@
     </ng-template>
     <ng-template pTemplate="body"   let-rowIndex="rowIndex"  let-questionData>
         <tr>
-            <td  class='questions'>{{rowIndex}} {{this.questions[rowIndex]._id}}{{questions[rowIndex].text}}</td>
+            <td  class='questions'>{{questions[rowIndex].text}}</td>
             <td  class='answers' *ngFor="let answer of answers" >
                 <p-radioButton (click)="radioClick(rowIndex)" name='{{questions.text}}' value="{{answer.item}}" [(ngModel)]="selectedValue[rowIndex]"></p-radioButton>
             </td>

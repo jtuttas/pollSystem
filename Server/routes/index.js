@@ -2,23 +2,22 @@ var express = require('express');
 var MongoClient = require('mongodb').MongoClient;
 var router = express.Router();
 var dbname = "umfrage"
-var collectionName = "antworten"
-var url = "mongodb://localhost:27017/";
 var dbo;
 var config = require('../../config')
 var uuid = require('uuid');
 
 var ids = new Array();
 
+console.log('config ist ' + JSON.stringify(config));
+
 // Connect to the db
-MongoClient.connect(url, function (err, db) {
+MongoClient.connect(config.mongodb, function (err, db) {
   if (!err) {
-    console.log("We are connected to " + url);
+    console.log("We are connected to " + config.mongodb);
     dbo = db.db(dbname);
   }
 });
 
-console.log('config ist ' + JSON.stringify(config));
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
