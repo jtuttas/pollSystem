@@ -1,9 +1,11 @@
 import { Injectable } from "@angular/core";
-import { Config } from "./Config";
+import * as config from '../../../config';
 import { Http, Headers, Response } from "@angular/http";
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+
+
 @Injectable()
 export class PollService {
     url: any;
@@ -17,10 +19,10 @@ export class PollService {
      */
     getLatestPoll(polltype: string, id: string) {
         var headers = new Headers();
-        headers.append("secret", Config.SECRET);
+        headers.append("Secret", config.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = Config.SERVER + "quest/" + polltype + "/" + id;
+        this.url = config.SERVER + "quest/" + polltype + "/" + id;
         console.log("get Poll Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -33,10 +35,10 @@ export class PollService {
      */
     getQuestions(polltype: string) {
         var headers = new Headers();
-        headers.append("secret", Config.SECRET);
+        headers.append("Secret", config.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = Config.SERVER + "questions/" + polltype;
+        this.url = config.SERVER + "questions/" + polltype;
         console.log("get Questions  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -49,10 +51,10 @@ export class PollService {
      */
     getAnswers(polltype: string) {
         var headers = new Headers();
-        headers.append("secret", Config.SECRET);
+        headers.append("Secret", config.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = Config.SERVER + "answers/" + polltype;
+        this.url = config.SERVER + "answers/" + polltype;
         console.log("get Answers  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -68,9 +70,9 @@ export class PollService {
      */
     setAnswer(polltype: string, id: string, questionID: string,answer:number) {
         var headers = new Headers();
-        headers.append("secret", Config.SECRET);
+        headers.append("Secret", config.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
-        this.url = Config.SERVER + "quest/" + polltype;
+        this.url = config.SERVER + "quest/" + polltype;
         var body = {
             "_id": id,
             "question": questionID,
@@ -93,9 +95,9 @@ export class PollService {
      */
     newSubscriber(polltype: string, id: string, course: string,poll: string) {
         var headers = new Headers();
-        headers.append("secret", Config.SECRET);
+        headers.append("Secret", config.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
-        this.url = Config.SERVER + "quest/" + polltype;
+        this.url = config.SERVER + "quest/" + polltype;
         var body = {
             "_id": id,
             "course": course,

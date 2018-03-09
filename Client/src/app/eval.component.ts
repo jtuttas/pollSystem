@@ -21,13 +21,13 @@ import { PasswordModule } from 'primeng/password';
 })
 export class EvalComponent implements OnInit {
     titel: string = "?";
-    private sub: any;
-    private polltype: string;
+    sub: any;
+    polltype: string;
     msgs: Message[] = [];
     answers: Answer[];
-    private questions: Question[] = [];
+    questions: Question[] = [];
 
-    private questionData: Question[] = [];
+    questionData: Question[] = [];
 
     selectedHauptumfrage: Umfrage;
     selectedVergleichsumfrage: Umfrage;
@@ -51,7 +51,7 @@ export class EvalComponent implements OnInit {
 
     cancel() {
         console.log("Cancel");
-        
+
         this.displayAuth = false;
         if (this.selectedUmfrage === this.selectedHauptumfrage) {
             console.log("War Hauptumfrage");

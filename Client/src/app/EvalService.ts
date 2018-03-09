@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Config } from "./Config";
+import * as config from '../../../config';
 import { Http, Headers, Response } from "@angular/http";
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/operator/catch';
@@ -17,10 +17,10 @@ export class EvalService {
      */
     getPolls(polltype: string) {
         var headers = new Headers();
-        headers.append("secret", Config.SECRET);
+        headers.append("Secret", config.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = Config.SERVER + "polls/" + polltype ;
+        this.url = config.SERVER + "polls/" + polltype ;
         console.log("get Polls Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -32,17 +32,17 @@ export class EvalService {
      * @param polltype Der Polltype 
      * @param poll Die Umfrage
      */
-    getCourses(polltype: string,poll:string,secret?:string) {
+    getCourses(polltype: string,poll:string,Secret?:string) {
         var headers = new Headers();
-        if (secret) {
-            headers.append("secret", secret);
+        if (Secret) {
+            headers.append("Secret", Secret);
         }
         else {
-            headers.append("secret", Config.SECRET);
+            headers.append("Secret", config.Secret);
         }
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = Config.SERVER + "courses/" + polltype+"/"+poll ;
+        this.url = config.SERVER + "courses/" + polltype+"/"+poll ;
         console.log("get Courses Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -56,17 +56,17 @@ export class EvalService {
      * @param course Die Klassen (darf RegEx sein)
      * 
      */
-    getEvaluation(polltype: string,poll:string,course:string,secret?:string) {
+    getEvaluation(polltype: string,poll:string,course:string,Secret?:string) {
         var headers = new Headers();
-        if (secret) {
-            headers.append("secret", secret);
+        if (Secret) {
+            headers.append("Secret", Secret);
         }
         else {
-            headers.append("secret", Config.SECRET);
+            headers.append("Secret", config.Secret);
         }
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = Config.SERVER + "evaluate/"+polltype+"/"+poll+"/"+course ;
+        this.url = config.SERVER + "evaluate/"+polltype+"/"+poll+"/"+course ;
         console.log("get Evaluation Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -75,10 +75,10 @@ export class EvalService {
 
     auth(polltype: string,poll:string,password:string) {
         var headers = new Headers();
-        headers.append("secret", Config.SECRET);
+        headers.append("Secret", config.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = Config.SERVER + "polls/"+polltype+"/"+poll;
+        this.url = config.SERVER + "polls/"+polltype+"/"+poll;
         console.log("AUTH  URL=" + this.url);
         var body={
             password:password

@@ -21,7 +21,7 @@ export class VoteComponent implements OnInit {
     polltype: string;
     msg: string;
     questions: Question[];
-    private questionData: Question[] = [];
+    questionData: Question[] = [];
     answers: Answer[];
     results: Result[];
     selectedValue: string[];
