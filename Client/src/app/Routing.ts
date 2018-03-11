@@ -4,7 +4,7 @@ import {PageNotFoundComponent} from "./PageNotFoundComponent";
 import {ModuleWithProviders} from "@angular/core";
 import { EvalComponent } from "./eval.component";
 import { DemoComponent } from "./demo.component";
-const appRoutes: Routes = [
+const appRoutes: Routes = [ 
   {
     path: '',
     pathMatch: 'full',
@@ -18,4 +18,4 @@ const appRoutes: Routes = [
 
 ];
 
-export var routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
+export var routing: ModuleWithProviders = RouterModule.forRoot(appRoutes,{useHash: true});

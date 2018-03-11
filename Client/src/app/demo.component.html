@@ -1,4 +1,4 @@
-<h1>DemoComponent</h1>
+<h1>Demo KEY erzeugen</h1>
 <div class="parameters">
     <h4>Polltype</h4>
     Der Typt der Umfrage, also aus welchen Fragen und Antwortskalen die Umfrage besteht:
@@ -18,11 +18,11 @@
 <p-dialog header="Ihre Zugangsdaten" [width]="400" [(visible)]="display">
     <p>Sie erreichen die Umfrage über folgenden Link</p>
     <div class="result">
-        <b><a target="_blank" href="http:vote/{{polltype}}/{{id}}">Zur Umfrage</a></b>
+        <b><a target="_blank" [routerLink]="['/vote', polltype , id]" >Zur Umfrage</a></b>
     </div>
     <p>Sie erreichen die Auswertung über folgenden Link</p>
     <div class="result">
-        <b> <a target="_blank" href="http:eval/{{polltype}}">Zur Auswertung</a></b>
+        <b> <a target="_blank" [routerLink]="['/eval', polltype]">Zur Auswertung</a></b>
     </div>
 </p-dialog>
 <p-growl [(value)]="msgs"></p-growl>

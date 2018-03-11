@@ -23,17 +23,29 @@ Der Client ist eine Angualr CLI Anwendung und kann wie folgt gestartet werden.
 ng serve
 ```
 Anschließend kann der Client aufgerufen werden via http://localhost:4200
+
+Für den produktiv Betrieb kann die Anwendung deployed werden via
+```
+ng build --prod
+```
 ## Durchführen einer Umfrage
 Zum Durchführen einer Umfrage steht das Powershell CMDlet umfrage.ps1 zur Verfügung. Dieses Benötigt das Modul *Mdbc* um auf die MongoDB zugreifen zu können, dieses kann einfach über
 ```ps1
 Import-Module Mdbc
 ```
-importtiert werden. Wir das Script gestartet stehen folgende CMDLets zur Verfügung:
+importtiert werden. 
+
+Wird das Script gestartet stehen folgende CMDLets zur Verfügung:
 - Import-Question
 - Import-Answer
 - New-Poll
 - New-Subscriber
 - Invite-Subscriber
+
+Das Script kann ebenso einfach über die Powershell Gallery bezogen werden, hier als Administrator eingeben:
+```ps1
+Install-Script -Name pollsystem
+```
 
 Die Funktionen sind alle mit Hilfstexten versehen und So kann über *Get-Help New-Subscriber* diese abgefragt werden.
 

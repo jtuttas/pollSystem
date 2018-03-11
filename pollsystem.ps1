@@ -1,3 +1,35 @@
+
+<#PSScriptInfo
+
+.VERSION 1.1
+
+.GUID d0447cf7-b43e-4faa-bf76-649cb83688ac
+
+.AUTHOR Jörg Tuttas
+
+.COMPANYNAME 
+
+.COPYRIGHT 
+
+.TAGS 
+
+.LICENSEURI 
+
+.PROJECTURI 
+
+.ICONURI 
+
+.EXTERNALMODULEDEPENDENCIES Mdbc
+
+.REQUIREDSCRIPTS 
+
+.EXTERNALSCRIPTDEPENDENCIES 
+
+.RELEASENOTES
+
+.DESCRIPTION  Administration Script f. das Umfragesystem 
+
+#> 
 <#
 .Synopsis
     Importieren von Fragen in die Mongo DB Datenbank
@@ -359,7 +391,7 @@ function New-Subscriber {
     }    
     process {
         $teilnehmer = "" | Select-Object -Property "id", "email", "course", "poll", "polltype"        
-        $id = genId;
+        $id = (New-Guid).Guid;
         $teilnehmer.id = $id
         $teilnehmer.polltype = $Polltype
         #Write-Host "Parameterset Name= $($PsCmdlet.ParameterSetName)"
@@ -392,17 +424,7 @@ function New-Subscriber {
 }
 
 
-function genId () {
-    $s = "";
-    for ($i = 0; $i -lt 20; $i++) {
-        $r = 0
-        while (!($r -ge 48 -and $r -le 57 -or $r -ge 65 -and $r -le 90 -or $r -ge 97 -and $r -le 122)) {
-            $r = get-Random -minimum 48 -maximum 122
-        }
-        $s += [char]$r 
-    }
-    return $s
-}
+
 
 <#
 .SYNOPSIS
@@ -688,3 +710,5 @@ function Import-Result {
     end {
     }
 }
+
+

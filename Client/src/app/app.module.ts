@@ -22,13 +22,14 @@ import {ChartModule} from 'primeng/chart';
 import {PasswordModule} from 'primeng/password';
 import {InputTextModule} from 'primeng/inputtext';
 import { DemoComponent } from './demo.component';
+import { RouterModule } from '@angular/router';
 @NgModule({
   declarations: [
     AppComponent, VoteComponent, PageNotFoundComponent,EvalComponent,DemoComponent
   ],
-  exports: [VoteComponent, PageNotFoundComponent],
+  exports: [],
   imports: [
-    BrowserModule, routing, HttpModule, TableModule,RadioButtonModule,FormsModule,GrowlModule,DropdownModule,
+    RouterModule,BrowserModule, routing, HttpModule, TableModule,RadioButtonModule,FormsModule,GrowlModule,DropdownModule,
     BrowserAnimationsModule, ButtonModule, DialogModule,ChartModule,PasswordModule, InputTextModule
   ],
   
