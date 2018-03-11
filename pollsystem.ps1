@@ -394,10 +394,12 @@ function New-Subscriber {
         $id = (New-Guid).Guid;
         $teilnehmer.id = $id
         $teilnehmer.polltype = $Polltype
+        $teilnehmer | Add-Member -MemberType NoteProperty -Name antworten -value (New-object System.Collections.Arraylist)
+
         #Write-Host "Parameterset Name= $($PsCmdlet.ParameterSetName)"
         if ($data.EMail) {
             Write-Verbose "Trage neuen Teilnehmer mit der _id=$id in die Collection R$Polltype ein f. den Course=$($data.Course)!"
-            @{_id = "$id"; course = $data.Course; poll = $Poll} | Add-MdbcData
+            @{_id = "$id"; course = $data.Course; poll = $Poll; antworten = $teilnehmer.antworten} | Add-MdbcData
             $teilnehmer.email = $data.EMail
             $teilnehmer.course = $data.Course
             $teilnehmer.poll = $Poll
@@ -405,14 +407,14 @@ function New-Subscriber {
         else {
             if ($Email) {
                 Write-Verbose "Trage neuen Teilnehmer mit der _id=$id in die Collection R$Polltype ein f. den Course=$Course"
-                @{_id = "$id"; course = $Course; poll = $Poll} | Add-MdbcData
+                @{_id = "$id"; course = $Course; poll = $Poll; antworten = $teilnehmer.antworten} | Add-MdbcData
                 $teilnehmer.email = $EMail
                 $teilnehmer.course = $Course
                 $teilnehmer.poll = $Poll
             }
             else {
                 Write-Verbose "Trage neuen Teilnehmer mit der _id=$id in die Collection R$Polltype ein f. den Course=$Course."
-                @{_id = "$id"; course = $Course; poll = $Poll} | Add-MdbcData
+                @{_id = "$id"; course = $Course; poll = $Poll; antworten = $teilnehmer.antworten} | Add-MdbcData
                 $teilnehmer.email = $data
                 $teilnehmer.course = $Course
                 $teilnehmer.poll = $Poll

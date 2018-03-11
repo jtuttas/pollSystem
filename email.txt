@@ -1,7 +1,7 @@
-Liebe Schülerinnen und Schüler,
+Liebe Schülerinn, lieber Schüler,
 hiermit möchte ich euch einladen an der Umfrage <b>{poll}</b> teilzunehmen. Ihr erreicht die Umfrage über folgenden Link:
 
-<a href="http://localhost:4200/bho/{id}">Umfrage</a>
+<a href="http://service.joerg-tuttas.de/pollsystem/#/vote/bho/{id}">Umfrage</a>
 
 Mit freundlichen Grüßen
 
