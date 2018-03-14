@@ -3,7 +3,9 @@ import { Question } from "./Question";
 export class PieModel {
     labels:string[]=[];
     totalCount:number=0;
+    totalAbsoluteCount:number=0;
     average:number=0;
+    averagePercent:number=0;
     datasets:Dataset[]=[new Dataset()];
 
     constructor(items:string[]) {

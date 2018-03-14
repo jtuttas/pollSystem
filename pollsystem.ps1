@@ -1,7 +1,7 @@
 
 <#PSScriptInfo
 
-.VERSION 1.1
+.VERSION 1.3
 
 .GUID d0447cf7-b43e-4faa-bf76-649cb83688ac
 
@@ -50,7 +50,7 @@
     Die Frage wird mit der QuestionID in der Collection Qbho angelegt
 .EXAMPLE
     Import-Question  -Question "Eine Frage?" -Polltype bho -mongoDB mongodb://localhost:27017/ -Databasename umfrage 
-    Die Frage wird mit der QuestionID Q1 in der Collection Qbho angelegt
+    Die Frage wird mit der QuestionID Q1 in der Collection Qbho angelegt 
 .EXAMPLE
     "Frage1","Frage2" | Import-Question  -Polltype bho -mongoDB mongodb://localhost:27017/ -Databasename umfrage 
     Die Fragen werden in der Collection Q{Polltype} mit den QuestionID Q1 und Q2  angelegt
@@ -712,5 +712,7 @@ function Import-Result {
     end {
     }
 }
+
+Write-Host "Poll System loaded..."
 
 

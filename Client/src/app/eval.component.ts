@@ -217,6 +217,8 @@ export class EvalComponent implements OnInit {
             evaluation.forEach(evalElement => {
                 var sum = 0;
                 var number = 0;
+                var totalNumber =0;
+                var maxItem=0;
                 console.log("Bearbeite Frage " + evalElement._id + " mit text:" + evalElement.text);
                 theModel[n].datasets[0].data = [];
                 this.answers.forEach(element => {
@@ -224,11 +226,19 @@ export class EvalComponent implements OnInit {
                     if (element.item > 0) {
                         sum += element.item * foundCount;
                         number += foundCount;
+                        if (maxItem<element.item) {
+                            maxItem=element.item;
+                        }
                     }
+                    totalNumber+=foundCount;
                     theModel[n].datasets[0].data.push(foundCount);
                 });
                 theModel[n].totalCount = number;
+                theModel[n].totalAbsoluteCount = totalNumber;
                 theModel[n].average = Math.round((sum / number) * 100) / 100;
+                if (maxItem!=0) {
+                    theModel[n].averagePercent = Math.round((theModel[n].average*100)/maxItem);
+                }
                 //console.log("Antworten sind: " + JSON.stringify(theModel[n].datasets[0].data));
                 n++;
             });

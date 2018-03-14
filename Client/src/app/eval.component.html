@@ -47,10 +47,10 @@
             <td class='questions'>{{questions[rowIndex].text}}</td>
             <td>
                 <div class="sumContainer">
-                    <span class="sum"> ∑={{this.modelHauptgruppen[rowIndex].totalCount}}</span>
+                    <span class="sum"> ∑={{this.modelHauptgruppen[rowIndex].totalCount}} / N={{this.modelHauptgruppen[rowIndex].totalAbsoluteCount}}</span>
                 </div>
                 <div class="averageContainer">
-                    <span class="average">Ø={{this.modelHauptgruppen[rowIndex].average}}</span>
+                    <span class="average">Ø={{this.modelHauptgruppen[rowIndex].average}}/ {{this.modelHauptgruppen[rowIndex].averagePercent}}%</span>
                 </div>
                 <p-chart type="pie" [data]="this.modelHauptgruppen[rowIndex]"></p-chart>
             </td>
