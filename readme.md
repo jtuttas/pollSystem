@@ -38,7 +38,7 @@ Das Modul kann über die Powershell Gallery bezogen werden und ist über folgend
 ```ps1
 Install-Module -Name pollmodule
 ```
-Das Modul enthält fogende Funktionen (Aufrug von *Get-Command -Module pollmodule*):
+Das Modul enthält fogende Funktionen (Aufruf von *Get-Command -Module pollmodule*):
 ```
 CommandType     Name                                               Version    Source
 -----------     ----                                               -------    ------
@@ -50,7 +50,7 @@ Function        New-Poll                                           1.0        po
 Function        New-Subscriber                                     1.0        pollsystem
 ```
 
-Die Funktionen sind alle mit Hilfstexten versehen und So kann über *Get-Help New-Subscriber* diese abgefragt werden.
+Die Funktionen sind alle mit Hilfstexten versehen und so kann über *Get-Help New-Subscriber* diese abgefragt werden.
 
 Im Folgenden will ich kurz das Durchführen einer Umfrage beschreiben.
 ### Import der Fragen
@@ -67,8 +67,8 @@ Diese Fragen könne einfach über *Import-Question* importtiert werden.
 Import-Excel fragen.xlsx | Import-Question -Polltype bho -mongoDB mongodb://localhost:27017/ 
 ```
 Wobei *Polltype* der Type der Umfrage ist und *mongoDB* der Connectionstring zur Datenbank. Default heißt die Datenbank *umfrage* und es wir eine Collection *Q{polltype}* angelegt.
-### Import der Antworskalen
-In ähnlicher Weise können die Antwortskalen importiert werden. Diese befinden sich günstiger Weise auch in einer Excel Tabelle mit folgenden Aussehen:
+### Import der Antwortskalen
+In ähnlicher Weise können die Antwortskalen importiert werden. Diese befinden sich günstiger Weise auch in einer Excel Tabelle mit folgendem Aussehen:
 
 row | answer | item 
 --- | --- | ---
