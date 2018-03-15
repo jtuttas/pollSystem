@@ -56,10 +56,10 @@
             </td>
             <td>
                 <div class="sumContainer">
-                    <span class="sum"> ∑={{this.modelVergleichsgruppen[rowIndex].totalCount}}</span>
+                    <span class="sum"> ∑={{this.modelVergleichsgruppen[rowIndex].totalCount}} / N={{this.modelVergleichsgruppen[rowIndex].totalAbsoluteCount}}</span>
                 </div>
                 <div class="averageContainer">
-                    <span class="average">Ø={{this.modelVergleichsgruppen[rowIndex].average}}</span>
+                    <span class="average">Ø={{this.modelVergleichsgruppen[rowIndex].average}}/ {{this.modelVergleichsgruppen[rowIndex].averagePercent}}%</span>
                 </div>
                 <p-chart type="pie" [data]="this.modelVergleichsgruppen[rowIndex]"></p-chart>
             </td>
