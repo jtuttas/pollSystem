@@ -29,22 +29,25 @@ Für den produktiv Betrieb kann die Anwendung deployed werden via
 ng build --prod
 ```
 ## Durchführen einer Umfrage
-Zum Durchführen einer Umfrage steht das Powershell CMDlet umfrage.ps1 zur Verfügung. Dieses Benötigt das Modul *Mdbc* um auf die MongoDB zugreifen zu können, dieses kann einfach über
+Zum Durchführen einer Umfrage steht das Powershell CMDlet umfrage.ps1 zur Verfügung. Dieses Benötigt das Modul *Mdbc* um auf die MongoDB zugreifen zu können, dieses kann einfach über folgenden Befehl installiert werden. 
 ```ps1
-Import-Module Mdbc
+Install-Module -Name Mdbc
 ```
-importtiert werden. 
 
-Wird das Script gestartet stehen folgende CMDLets zur Verfügung:
-- Import-Question
-- Import-Answer
-- New-Poll
-- New-Subscriber
-- Invite-Subscriber
-
-Das Script kann ebenso einfach über die Powershell Gallery bezogen werden, hier als Administrator eingeben:
+Das Modul kann über die Powershell Gallery bezogen werden und ist über folgende Anweisung zu installieren:
 ```ps1
-Install-Script -Name pollsystem
+Install-Module -Name pollmodule
+```
+Das Modul enthält fogende Funktionen (Aufrug von *Get-Command -Module pollmodule*):
+```
+CommandType     Name                                               Version    Source
+-----------     ----                                               -------    ------
+Function        Import-Answer                                      1.0        pollsystem
+Function        Import-Question                                    1.0        pollsystem
+Function        Import-Result                                      1.0        pollsystem
+Function        Invite-Subscriber                                  1.0        pollsystem
+Function        New-Poll                                           1.0        pollsystem
+Function        New-Subscriber                                     1.0        pollsystem
 ```
 
 Die Funktionen sind alle mit Hilfstexten versehen und So kann über *Get-Help New-Subscriber* diese abgefragt werden.
