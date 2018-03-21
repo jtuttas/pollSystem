@@ -88,8 +88,9 @@ services:
       - 81:80   
 ```
 
-Mittels dieser Anweisung
+Mittels diesen Anweisungen
 ```
+wget https://raw.githubusercontent.com/jtuttas/pollSystem/master/docker-compose.debug.arm.yml
 docker-compose -f docker-compose.debug.arm.yml up -d --build
 ```
 ## Server selbst einrichten

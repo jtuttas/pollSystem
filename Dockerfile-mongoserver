@@ -1,2 +1,0 @@
-FROM mongo:latest
-LABEL Name=pollclient Version=0.0.1

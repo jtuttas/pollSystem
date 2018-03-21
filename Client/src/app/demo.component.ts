@@ -25,6 +25,7 @@ export class DemoComponent {
     }
 
     generate() {
+
         this.display=false;
         this.pollservice.newSubscriber(this.polltype,this.id,this.course,this.poll).subscribe(
             data => {

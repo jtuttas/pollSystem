@@ -22,7 +22,7 @@ export class PollService {
         headers.append("Secret", config.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = config.SERVER + "quest/" + encodeURIComponent(polltype) + "/" + encodeURIComponent(id);
+        this.url = "http://"+window.location.hostname + ":3000/quest/" + encodeURIComponent(polltype) + "/" + encodeURIComponent(id);
         console.log("get Poll Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -38,7 +38,7 @@ export class PollService {
         headers.append("Secret", config.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = config.SERVER + "questions/" + encodeURIComponent(polltype);
+        this.url = "http://"+window.location.hostname + ":3000/questions/" + encodeURIComponent(polltype);
         console.log("get Questions  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -54,7 +54,7 @@ export class PollService {
         headers.append("Secret", config.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = config.SERVER + "answers/" + encodeURIComponent(polltype);
+        this.url = "http://"+window.location.hostname + ":3000/answers/" + encodeURIComponent(polltype);
         console.log("get Answers  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -72,13 +72,15 @@ export class PollService {
         var headers = new Headers();
         headers.append("Secret", config.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
-        this.url = config.SERVER + "quest/" + encodeURIComponent(polltype);
+        
+        this.url = "http://"+window.location.hostname + ":3000/quest/" + encodeURIComponent(polltype);
         var body = {
             "_id": id,
             "question": questionID,
             "answer": answer
         }
         console.log("Sende zum Server: "+JSON.stringify(body));
+        
         
         return this.http.put(this.url,JSON.stringify(body),{ headers: headers })
             .map(this.extractData)
@@ -97,14 +99,15 @@ export class PollService {
         var headers = new Headers();
         headers.append("Secret", config.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
-        this.url = config.SERVER + "quest/" + encodeURIComponent(polltype);
+        this.url = "http://"+window.location.hostname + ":3000/quest/" + encodeURIComponent(polltype);
         var body = {
             "_id": id,
             "course": course,
             "poll": poll
         }
         console.log("Sende zum Server: "+JSON.stringify(body));
-        
+        console.log("URL="+this.url);
+
         return this.http.post(this.url,JSON.stringify(body),{ headers: headers })
             .map(this.extractData)
             .catch(this.handleError);

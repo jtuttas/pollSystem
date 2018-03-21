@@ -20,7 +20,7 @@ export class EvalService {
         headers.append("Secret", config.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = config.SERVER + "polls/" + encodeURIComponent(polltype);
+        this.url = "http://"+window.location.hostname + ":3000/polls/" + encodeURIComponent(polltype);
         console.log("get Polls Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -42,7 +42,7 @@ export class EvalService {
         }
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = config.SERVER + "courses/" + encodeURIComponent(polltype)+"/"+encodeURIComponent(poll) ;
+        this.url = "http://"+window.location.hostname + ":3000/courses/" + encodeURIComponent(polltype)+"/"+encodeURIComponent(poll) ;
         console.log("get Courses Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -66,7 +66,7 @@ export class EvalService {
         }
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = config.SERVER + "evaluate/"+encodeURIComponent(polltype)+"/"+encodeURIComponent(poll)+"/"+encodeURIComponent(course);
+        this.url = "http://"+window.location.hostname + ":3000/evaluate/"+encodeURIComponent(polltype)+"/"+encodeURIComponent(poll)+"/"+encodeURIComponent(course);
         console.log("get Evaluation Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -78,7 +78,7 @@ export class EvalService {
         headers.append("Secret", config.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = config.SERVER + "polls/"+encodeURIComponent(polltype)+"/"+encodeURIComponent(poll);
+        this.url = "http://"+window.location.hostname + ":3000/polls/"+encodeURIComponent(polltype)+"/"+encodeURIComponent(poll);
         console.log("AUTH  URL=" + this.url);
         var body={
             password:password
