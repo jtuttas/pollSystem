@@ -5,9 +5,9 @@ Content-Type: application/json
 secret: 1234
 
 {
-    "_id": "abc",
+    "_id": "abcd",
     "course": "FIAE17K",
-    "poll": "Umfrage1",
+    "poll": "DemoUmfrage",
     "email": "fiae17j.mmusterm@mm-bbs.de"
 }
 

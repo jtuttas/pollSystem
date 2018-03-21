@@ -1,5 +1,36 @@
 # Umfrage Server/Client
-## Server
+## Docker-Images
+Für das Umfragesystem Client/Server existieren auch Docker Images, dieses kann einfach gestartet werden über:
+```
+# Mongo DB Server starten
+docker run -itd -p 27017:27017 mongo:latest
+
+# Pollserver starten
+docker run -itd -p 3000:3000 tuttas/pollserver:latest
+
+# Pollclient
+docker run -itd -p 81:80 tuttas/pollclient:latest
+```
+Anschließend kann über http://localhost:81/pollsystem/#/demo getest werden, ob das System läuft!
+
+Default wird sich mit einem MongoDB Server verbunden, der auf localhost läuft, soll sich mit einem anderen MongoDB Server verbunden werden, so die dazu die Enviroment Variable *MONGODB*:
+```
+docker run -itd -p 3000:3000 -e MONGODB=mongodb://admin:geheim@192.168.178.74:27017  tuttas/pollserver:latest
+```
+### Docker Images (ARM)
+Für ARM basierte Systeme wie dem Rspberry PI existiert der Tag 'arm', d.h. die o.g. Anweisung müsste wie folgt gestartet werden:
+```
+# MongoDB Server
+docker run -d -p 27017:27017 -p 28017:28017 -e MONGODB_PASS="geheim" mangoraft/mongodb-arm
+
+# Pollsystem Server
+docker run -itd -p 3000:3000 -e MONGODB=mongodb://admin:geheim@192.168.178.74:27017  tuttas/pollserver:arm
+
+# Pollsystem Client
+docker run -itd -p 81:80 tuttas/pollclient:arm
+
+```
+## Server selbst einrichten
 ### Vorbereitungen
 Zunächst müssen die notwendigen Komponenten installiert werden.
 ```
@@ -12,7 +43,7 @@ Nach der Installation der Pakete kann der Server gestertet werden.
 npm start
 ```
 Der Server läuft standradmäßig auf Port 3000, über http://localhost:3000 kann abgefragt werden ob der Server ordnungsgemäß läuft.
-## Client
+## Client selbst einrichten
 Auch hier müssen zunächst die notwendigen Module geladen werden.
 ```
 cd Client

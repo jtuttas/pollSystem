@@ -1,0 +1,6 @@
+FROM armhfbuild/nginx
+LABEL Name=pollclient Version=0.0.1
+RUN mkdir -p /usr/share/nginx/html/pollsystem
+RUN mkdir -p /usr/share/nginx/html/assets
+COPY Client/dist /usr/share/nginx/html/pollsystem
+COPY Client/dist/assets /usr/share/nginx/html/assets

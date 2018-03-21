@@ -7,21 +7,27 @@ var config = require('../../config')
 var uuid = require('uuid');
 
 var ids = new Array();
+var dbState="not connected"
 
 console.log('config ist ' + JSON.stringify(config));
-
+console.log('Connect to '+config.mongodb);
 // Connect to the db
 MongoClient.connect(config.mongodb, function (err, db) {
   if (!err) {
     console.log("We are connected to " + config.mongodb);
+    dbState="connected to MONGODB Server!";
     dbo = db.db(dbname);
+  }
+  else {
+    console.log('got Error:'+err);
+    dbState=err
   }
 });
 
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Umfrageserver ' + config.Version + ' is running..!!' });
+  res.render('index', { title: 'Umfrageserver ' + config.Version + ' is running..!! DBState='+dbState });
 });
 
 /**

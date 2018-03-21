@@ -1,0 +1,25 @@
+FROM arm32v7/node
+ENV NODE_ENV production
+ENV MONGODB mongodb://127.0.0.1:27017/
+WORKDIR /usr/src/app
+RUN mkdir -p /usr/src/app/Server
+RUN mkdir -p /usr/src/app/Server/bin
+RUN mkdir -p /usr/src/app/Server/public
+RUN mkdir -p /usr/src/app/Server/routes
+RUN mkdir -p /usr/src/app/Server/views
+
+COPY Server/bin /usr/src/app/Server/bin
+COPY Server/public /usr/src/app/Server/public
+COPY Server/routes /usr/src/app/Server/routes
+COPY Server/views /usr/src/app/Server/views
+COPY config.js /usr/src/app
+COPY Server/app.js /usr/src/app/Server
+COPY Server/package.json /usr/src/app/Server
+COPY Server/joinResults.js /usr/src/app/Server
+COPY server-startup.sh /usr/src/app
+RUN chmod +x /usr/src/app/server-startup.sh
+RUN cd Server  && \
+    npm install --production --silent && mv node_modules ../
+EXPOSE 3000
+CMD sh -C "/usr/src/app/server-startup.sh" $MONGODB
+
