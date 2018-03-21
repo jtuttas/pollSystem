@@ -17,8 +17,40 @@ Default wird sich mit einem MongoDB Server verbunden, der auf localhost läuft, 
 ```
 docker run -itd -p 3000:3000 -e MONGODB=mongodb://admin:geheim@192.168.178.74:27017  tuttas/pollserver:latest
 ```
+
+Nutzt man Docker Compose, so kann das Starten der Server noch einfacher durchgeführt werden, mittels folgenden YML Files:
+```yml
+version: '2.1'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    ports:
+      - 27017:27017
+  pollserver:
+    image: tuttas/pollserver:latest
+    ports:
+      - 3000:3000
+    links: 
+      - mongodb
+    environment: 
+      - MONGODB=mongodb://mongodb:27017
+    depends_on: 
+      - mongodb
+  pollclient:      
+    image: tuttas/pollclient:latest
+    ports:
+      - 81:80
+      
+```
+Hier startet man einfach:
+```
+docker-compose -f docker-compose.debug.yml up -d --build
+```
+
 ### Docker Images (ARM)
-Für ARM basierte Systeme wie dem Rspberry PI existiert der Tag 'arm', d.h. die o.g. Anweisung müsste wie folgt gestartet werden:
+Für ARM basierte Systeme wie dem Raspberry PI existiert der Tag 'arm', d.h. die o.g. Anweisung müsste wie folgt gestartet werden:
 ```
 # MongoDB Server
 docker run -d -p 27017:27017 -p 28017:28017 -e MONGODB_PASS="geheim" mangoraft/mongodb-arm
@@ -28,7 +60,37 @@ docker run -itd -p 3000:3000 -e MONGODB=mongodb://admin:geheim@192.168.178.74:27
 
 # Pollsystem Client
 docker run -itd -p 81:80 tuttas/pollclient:arm
+```
 
+Oder aber über Docker-Compose mit diesem YML File
+```yml
+version: '2.1'
+
+services:
+  mongodb:
+    image: mangoraft/mongodb-arm
+    container_name: "mongodb"
+    ports:
+      - 27017:27017
+  pollserver:
+    image: tuttas/pollserver:arm
+    ports:
+      - 3000:3000
+    links: 
+      - mongodb
+    environment: 
+      - MONGODB=mongodb://mongodb:27017
+    depends_on: 
+      - mongodb
+  pollclient:      
+    image: tuttas/pollclient:arm
+    ports:
+      - 81:80   
+```
+
+Mittels dieser Anweisung
+```
+docker-compose -f docker-compose.debug.arm.yml up -d --build
 ```
 ## Server selbst einrichten
 ### Vorbereitungen

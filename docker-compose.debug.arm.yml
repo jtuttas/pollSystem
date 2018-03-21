@@ -2,22 +2,24 @@ version: '2.1'
 
 services:
   mongodb:
-    image: mongo:latest
+    image: mangoraft/mongodb-arm
     container_name: "mongodb"
+    environment: 
+      - MONGODB_PASS=geheim
     ports:
       - 27017:27017
   pollserver:
-    image: tuttas/pollserver:latest
+    image: tuttas/pollserver:arm
     ports:
       - 3000:3000
     links: 
       - mongodb
     environment: 
-      - MONGODB=mongodb://mongodb:27017
+      - MONGODB=mongodb://admin:geheim@mongodb:27017
     depends_on: 
       - mongodb
   pollclient:      
-    image: tuttas/pollclient:latest
+    image: tuttas/pollclient:arm
     ports:
-      - 80:80
+      - 81:80
       
