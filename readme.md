@@ -69,7 +69,7 @@ docker run -itd -p 3000:3000 -e MONGODB=mongodb://admin:geheim@192.168.178.74:27
 docker run -itd -p 81:80 tuttas/pollclient:arm
 ```
 
-Oder aber über Docker-Compose mit diesem YML File
+Oder aber über Docker-Compose mit diesem YML File. Dabei muss natürlich die IP Adresse (im pollclient) f. den Pollserver angepasst werden!
 ```yml
 version: '2.1'
 
@@ -101,6 +101,7 @@ services:
 Mittels diesen Anweisungen
 ```
 wget https://raw.githubusercontent.com/jtuttas/pollSystem/master/docker-compose.debug.arm.yml
+# Hier jetzt noch die IP Adresse des Servers anpassen!
 docker-compose -f docker-compose.debug.arm.yml up -d --build
 ```
 ## Server selbst einrichten
