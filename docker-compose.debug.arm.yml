@@ -16,10 +16,14 @@ services:
       - mongodb
     environment: 
       - MONGODB=mongodb://admin:geheim@mongodb:27017
+      - SECRET=12345
     depends_on: 
       - mongodb
   pollclient:      
     image: tuttas/pollclient:arm
+    environment: 
+      - POLLSERVER=http://192.168.178.74:3000/
+      - SECRET=12345
     ports:
       - 81:80
       

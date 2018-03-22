@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
-import * as config from '../../../config';
 import { Http, Headers, Response } from "@angular/http";
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+
+declare let configClient:any;
 
 @Injectable()
 export class EvalService {
@@ -17,10 +18,10 @@ export class EvalService {
      */
     getPolls(polltype: string) {
         var headers = new Headers();
-        headers.append("Secret", config.Secret);
+        headers.append("Secret", configClient.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = "http://"+window.location.hostname + ":3000/polls/" + encodeURIComponent(polltype);
+        this.url = configClient.pollserver+"polls/" + encodeURIComponent(polltype);
         console.log("get Polls Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -38,11 +39,11 @@ export class EvalService {
             headers.append("Secret", Secret);
         }
         else {
-            headers.append("Secret", config.Secret);
+            headers.append("Secret", configClient.Secret);
         }
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = "http://"+window.location.hostname + ":3000/courses/" + encodeURIComponent(polltype)+"/"+encodeURIComponent(poll) ;
+        this.url = configClient.pollserver+"courses/" + encodeURIComponent(polltype)+"/"+encodeURIComponent(poll) ;
         console.log("get Courses Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -62,11 +63,11 @@ export class EvalService {
             headers.append("Secret", Secret);
         }
         else {
-            headers.append("Secret", config.Secret);
+            headers.append("Secret", configClient.Secret);
         }
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = "http://"+window.location.hostname + ":3000/evaluate/"+encodeURIComponent(polltype)+"/"+encodeURIComponent(poll)+"/"+encodeURIComponent(course);
+        this.url = configClient.pollserver+"evaluate/"+encodeURIComponent(polltype)+"/"+encodeURIComponent(poll)+"/"+encodeURIComponent(course);
         console.log("get Evaluation Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -75,10 +76,10 @@ export class EvalService {
 
     auth(polltype: string,poll:string,password:string) {
         var headers = new Headers();
-        headers.append("Secret", config.Secret);
+        headers.append("Secret", configClient.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = "http://"+window.location.hostname + ":3000/polls/"+encodeURIComponent(polltype)+"/"+encodeURIComponent(poll);
+        this.url = configClient.pollserver+"polls/"+encodeURIComponent(polltype)+"/"+encodeURIComponent(poll);
         console.log("AUTH  URL=" + this.url);
         var body={
             password:password

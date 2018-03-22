@@ -14,10 +14,14 @@ services:
       - mongodb
     environment: 
       - MONGODB=mongodb://mongodb:27017
+      - SECRET=12345
     depends_on: 
       - mongodb
   pollclient:      
     image: tuttas/pollclient:latest
+    environment: 
+      - POLLSERVER=http://localhost:3000/
+      - SECRET=12345
     ports:
-      - 80:80
+      - 81:80
       

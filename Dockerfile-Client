@@ -1,6 +1,10 @@
 FROM nginx:latest
-LABEL Name=pollclient Version=0.0.1
-RUN mkdir -p /usr/share/nginx/html/pollsystem
+LABEL Name=tuttas/pollclient Version=0.0.1
+ENV SECRET 1234
+ENV POLLSERVER http://localhost:3000/
 RUN mkdir -p /usr/share/nginx/html/assets
-COPY Client/dist /usr/share/nginx/html/pollsystem
+COPY Client/dist /usr/share/nginx/html
 COPY Client/dist/assets /usr/share/nginx/html/assets
+COPY client-startup.sh /usr/share
+RUN chmod +x /usr/share/client-startup.sh
+CMD sh -C "/usr/share/client-startup.sh" $POLLSERVER $SECRET

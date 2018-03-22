@@ -1,5 +1,5 @@
 FROM arm32v7/node
-ENV NODE_ENV production
+ENV SECRET 1234
 ENV MONGODB mongodb://127.0.0.1:27017/
 WORKDIR /usr/src/app
 RUN mkdir -p /usr/src/app/Server
@@ -21,5 +21,5 @@ RUN chmod +x /usr/src/app/server-startup.sh
 RUN cd Server  && \
     npm install --production --silent && mv node_modules ../
 EXPOSE 3000
-CMD sh -C "/usr/src/app/server-startup.sh" $MONGODB
+CMD sh -C "/usr/src/app/server-startup.sh" $MONGODB $SERCRET
 

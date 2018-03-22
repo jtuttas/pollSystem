@@ -1,3 +1,4 @@
+#$mongo="mongodb://localhost:27017"
 $mongo="mongodb://admin:geheim@192.168.178.74:27017"
 . $PSScriptRoot/pollsystem.ps1
 new-poll -polltype bho -poll DemoUmfrage -enable $true -mongodb $mongo -Verbose

@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
-import * as config from '../../../config';
 import { Http, Headers, Response } from "@angular/http";
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
+declare let configClient:any;
 
 @Injectable()
 export class PollService {
@@ -19,10 +19,10 @@ export class PollService {
      */
     getLatestPoll(polltype: string, id: string) {
         var headers = new Headers();
-        headers.append("Secret", config.Secret);
+        headers.append("Secret", configClient.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = "http://"+window.location.hostname + ":3000/quest/" + encodeURIComponent(polltype) + "/" + encodeURIComponent(id);
+        this.url = configClient.pollserver+"quest/" + encodeURIComponent(polltype) + "/" + encodeURIComponent(id);
         console.log("get Poll Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -35,10 +35,10 @@ export class PollService {
      */
     getQuestions(polltype: string) {
         var headers = new Headers();
-        headers.append("Secret", config.Secret);
+        headers.append("Secret", configClient.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = "http://"+window.location.hostname + ":3000/questions/" + encodeURIComponent(polltype);
+        this.url = configClient.pollserver+"questions/" + encodeURIComponent(polltype);
         console.log("get Questions  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -51,10 +51,10 @@ export class PollService {
      */
     getAnswers(polltype: string) {
         var headers = new Headers();
-        headers.append("Secret", config.Secret);
+        headers.append("Secret", configClient.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = "http://"+window.location.hostname + ":3000/answers/" + encodeURIComponent(polltype);
+        this.url = configClient.pollserver+"answers/" + encodeURIComponent(polltype);
         console.log("get Answers  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -70,10 +70,10 @@ export class PollService {
      */
     setAnswer(polltype: string, id: string, questionID: string,answer:number) {
         var headers = new Headers();
-        headers.append("Secret", config.Secret);
+        headers.append("Secret", configClient.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
         
-        this.url = "http://"+window.location.hostname + ":3000/quest/" + encodeURIComponent(polltype);
+        this.url = configClient.pollserver+"quest/" + encodeURIComponent(polltype);
         var body = {
             "_id": id,
             "question": questionID,
@@ -97,9 +97,9 @@ export class PollService {
      */
     newSubscriber(polltype: string, id: string, course: string,poll: string) {
         var headers = new Headers();
-        headers.append("Secret", config.Secret);
+        headers.append("Secret", configClient.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
-        this.url = "http://"+window.location.hostname + ":3000/quest/" + encodeURIComponent(polltype);
+        this.url = configClient.pollserver+"quest/" + encodeURIComponent(polltype);
         var body = {
             "_id": id,
             "course": course,
@@ -107,11 +107,12 @@ export class PollService {
         }
         console.log("Sende zum Server: "+JSON.stringify(body));
         console.log("URL="+this.url);
+        
 
         return this.http.post(this.url,JSON.stringify(body),{ headers: headers })
             .map(this.extractData)
             .catch(this.handleError);
-
+        
     }
 
     private extractData(res: Response) {
