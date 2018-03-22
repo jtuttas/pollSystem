@@ -22,7 +22,7 @@ export class PollService {
         headers.append("Secret", configClient.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = configClient.pollserver+"quest/" + encodeURIComponent(polltype) + "/" + encodeURIComponent(id);
+        this.url = "http://"+configClient.host+configClient.port+"quest/" + encodeURIComponent(polltype) + "/" + encodeURIComponent(id);
         console.log("get Poll Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -38,7 +38,7 @@ export class PollService {
         headers.append("Secret", configClient.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = configClient.pollserver+"questions/" + encodeURIComponent(polltype);
+        this.url = "http://"+configClient.host+configClient.port+"questions/" + encodeURIComponent(polltype);
         console.log("get Questions  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -54,7 +54,7 @@ export class PollService {
         headers.append("Secret", configClient.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = configClient.pollserver+"answers/" + encodeURIComponent(polltype);
+        this.url = "http://"+configClient.host+configClient.port+"answers/" + encodeURIComponent(polltype);
         console.log("get Answers  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -73,7 +73,7 @@ export class PollService {
         headers.append("Secret", configClient.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
         
-        this.url = configClient.pollserver+"quest/" + encodeURIComponent(polltype);
+        this.url = "http://"+configClient.host+configClient.port+"quest/" + encodeURIComponent(polltype);
         var body = {
             "_id": id,
             "question": questionID,
@@ -99,7 +99,7 @@ export class PollService {
         var headers = new Headers();
         headers.append("Secret", configClient.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
-        this.url = configClient.pollserver+"quest/" + encodeURIComponent(polltype);
+        this.url = "http://"+configClient.host+configClient.port+"quest/" + encodeURIComponent(polltype);
         var body = {
             "_id": id,
             "course": course,

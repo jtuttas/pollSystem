@@ -20,7 +20,6 @@ services:
   pollclient:      
     image: tuttas/pollclient:latest
     environment: 
-      - POLLSERVER=http://localhost:3000/
       - SECRET=12345
     ports:
       - 81:80

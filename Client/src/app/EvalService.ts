@@ -21,7 +21,7 @@ export class EvalService {
         headers.append("Secret", configClient.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = configClient.pollserver+"polls/" + encodeURIComponent(polltype);
+        this.url = "http://"+configClient.host+configClient.port+"polls/" + encodeURIComponent(polltype);
         console.log("get Polls Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -43,7 +43,7 @@ export class EvalService {
         }
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = configClient.pollserver+"courses/" + encodeURIComponent(polltype)+"/"+encodeURIComponent(poll) ;
+        this.url = "http://"+configClient.host+configClient.port+"courses/" + encodeURIComponent(polltype)+"/"+encodeURIComponent(poll) ;
         console.log("get Courses Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -67,7 +67,7 @@ export class EvalService {
         }
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = configClient.pollserver+"evaluate/"+encodeURIComponent(polltype)+"/"+encodeURIComponent(poll)+"/"+encodeURIComponent(course);
+        this.url = "http://"+configClient.host+configClient.port+"evaluate/"+encodeURIComponent(polltype)+"/"+encodeURIComponent(poll)+"/"+encodeURIComponent(course);
         console.log("get Evaluation Results  URL=" + this.url);
         return this.http.get(this.url, { headers: headers })
             .map(this.extractData)
@@ -79,7 +79,7 @@ export class EvalService {
         headers.append("Secret", configClient.Secret);
         headers.append("Content-Type", "application/json;  charset=UTF-8");
 
-        this.url = configClient.pollserver+"polls/"+encodeURIComponent(polltype)+"/"+encodeURIComponent(poll);
+        this.url = "http://"+configClient.host+configClient.port+"polls/"+encodeURIComponent(polltype)+"/"+encodeURIComponent(poll);
         console.log("AUTH  URL=" + this.url);
         var body={
             password:password

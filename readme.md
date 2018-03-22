@@ -15,10 +15,10 @@ Anschließend kann über http://localhost:81/#/demo getest werden, ob das System
 
 Default verbindet sich der pollserver mit einem MongoDB Server verbunden, der auf localhost läuft, soll sich mit einem anderen MongoDB Server verbunden werden, so die dazu die Environment Variable *MONGODB*. Ferner kann über die Environment Variable *SECRET* (default ist 1234) das geheime Wort aufgetauscht werden, mittels der sich Server und Client gegenseitig authentifizieren.
 
-Der Client verbindet sich default immer mit einem Server der auf http://localhost:300 läuft und nutzt dabei das Secret "1234". Sollen diese Werte geändert werden, so kann dazu die Environment Variable *POLLSRVER* und *SECRET* genutzt werden.
+Der Client verbindet sich default immer mit dem Server auf dem er ausgeführt wird und nutzt dabei das Secret "1234". Sollen diese Werte geändert werden, so kann dazu die Environment Variable *HOST*,*PORT* und *SECRET* genutzt werden.
 ```
 docker run -itd -p 3000:3000 -e MONGODB=mongodb://admin:geheim@192.168.178.74:27017 -e SECRET=12345 tuttas/pollserver:latest
-docker run -itd -p 81:80 -e POLLSERVER=http://localhost:3000/ -e SECRET=12345 tuttas/pollclient:latest
+docker run -itd -p 81:80 -e HOST='localhost' -e PORT=:3000/ -e SECRET=12345 tuttas/pollclient:latest
 ```
 
 Nutzt man Docker Compose, so kann das Starten der Server noch einfacher durchgeführt werden, mittels folgenden YML Files:
