@@ -1,27 +1,6 @@
 # Umfrage Server/Client
 ## Docker-Images
-Für das Umfragesystem Client/Server existieren auch Docker Images, dieses kann einfach gestartet werden über:
-```
-# Mongo DB Server starten
-docker run -itd -p 27017:27017 mongo:latest
-
-# Pollserver starten
-docker run -itd -p 3000:3000 tuttas/pollserver:latest
-
-# Pollclient
-docker run -itd -p 81:80 tuttas/pollclient:latest
-```
-Anschließend kann über http://localhost:81/#/demo getest werden, ob das System läuft!
-
-Default verbindet sich der pollserver mit einem MongoDB Server verbunden, der auf localhost läuft, soll sich mit einem anderen MongoDB Server verbunden werden, so die dazu die Environment Variable *MONGODB*. Ferner kann über die Environment Variable *SECRET* (default ist 1234) das geheime Wort aufgetauscht werden, mittels der sich Server und Client gegenseitig authentifizieren.
-
-Der Client verbindet sich default immer mit dem Server auf dem er ausgeführt wird und nutzt dabei das Secret "1234". Sollen diese Werte geändert werden, so kann dazu die Environment Variable *HOST*,*PORT* und *SECRET* genutzt werden.
-```
-docker run -itd -p 3000:3000 -e MONGODB=mongodb://admin:geheim@192.168.178.74:27017 -e SECRET=12345 tuttas/pollserver:latest
-docker run -itd -p 81:80 -e HOST='localhost' -e PORT=:3000/ -e SECRET=12345 tuttas/pollclient:latest
-```
-
-Nutzt man Docker Compose, so kann das Starten der Server noch einfacher durchgeführt werden, mittels folgenden YML Files:
+Für das Umfragesystem Client/Server existieren auch Docker Images. Wird Docker-Compose verwendet, so kann das System einfach eingerichtet werden über folgendes YML File:
 ```yml
 version: '2.1'
 
@@ -45,7 +24,6 @@ services:
   pollclient:      
     image: tuttas/pollclient:latest
      environment: 
-      - POLLSERVER=http://localhost:3000/
       - SECRET=12345
     ports:
       - 81:80
@@ -55,21 +33,33 @@ Hier startet man einfach:
 ```
 docker-compose -f docker-compose.debug.yml up -d --build
 ```
+Anschließend kann über http://localhost:81/#/demo getest werden, ob das System läuft!
+
+Natürlich können die einzelnen Server auch manuell gestartet werden, z.B.
+```
+# Mongo DB Server starten
+docker run -itd -p 27017:27017 mongo:latest
+
+# Pollserver starten
+docker run -itd -p 3000:3000 tuttas/pollserver:latest
+
+# Pollclient
+docker run -itd -p 81:80 tuttas/pollclient:latest
+```
+
+Default verbindet sich der pollserver mit einem MongoDB Server verbunden, der auf localhost läuft, soll sich mit einem anderen MongoDB Server verbunden werden, so die dazu die Environment Variable *MONGODB*. Diese Variable erwartet einen Connection-String zur Mongo DB Datenbank!
+
+Ferner kann über die Environment Variable *SECRET* (default ist 1234) das geheime Wort aufgetauscht werden, mittels der sich Server und Client gegenseitig authentifizieren.
+
+Der Client verbindet sich default immer mit dem Server auf dem er ausgeführt wird und nutzt dabei das Secret "1234". Sollen diese Werte geändert werden, so kann dazu die Environment Variable *HOST* (achtung, den Host stets mit einfachen Hochkomma angeben),*PORT* (die Portnummer des Servers) und *SECRET* (für die gegenseitige Authentifizierung von Server<->Client) genutzt werden.
+```
+docker run -itd -p 3000:3000 -e MONGODB=mongodb://admin:geheim@192.168.178.74:27017 -e SECRET=12345 tuttas/pollserver:latest
+docker run -itd -p 81:80 -e HOST='localhost' -e PORT=:3000/ -e SECRET=12345 tuttas/pollclient:latest
+```
 
 ### Docker Images (ARM)
-Für ARM basierte Systeme wie dem Raspberry PI existiert der Tag 'arm', d.h. die o.g. Anweisung müsste wie folgt gestartet werden:
-```
-# MongoDB Server
-docker run -d -p 27017:27017 -p 28017:28017 -e MONGODB_PASS="geheim" mangoraft/mongodb-arm
 
-# Pollsystem Server
-docker run -itd -p 3000:3000 -e MONGODB=mongodb://admin:geheim@192.168.178.74:27017  tuttas/pollserver:arm
-
-# Pollsystem Client
-docker run -itd -p 81:80 tuttas/pollclient:arm
-```
-
-Oder aber über Docker-Compose mit diesem YML File. Dabei muss natürlich die IP Adresse (im pollclient) f. den Pollserver angepasst werden!
+Für ARM basierte Systeme wie dem Raspberry PI existieren Images mit dem Tag 'arm', diese YML-File startet auf dem PI den CLient/Server und den Datenbankserver.
 ```yml
 version: '2.1'
 
@@ -92,18 +82,29 @@ services:
   pollclient:      
     image: tuttas/pollclient:arm
     environment: 
-      - POLLSERVER=http://192.168.178.74:3000/
       - SECRET=12345
     ports:
       - 81:80   
 ```
 
-Mittels diesen Anweisungen
+Über diese Anweisung erledigt das dieser Zweizeile:
 ```
 wget https://raw.githubusercontent.com/jtuttas/pollSystem/master/docker-compose.debug.arm.yml
-# Hier jetzt noch die IP Adresse des Servers anpassen!
 docker-compose -f docker-compose.debug.arm.yml up -d --build
 ```
+
+Auch hier können natürlich die Container manuell gestartet werden:
+```
+# MongoDB Server
+docker run -d -p 27017:27017 -p 28017:28017 -e MONGODB_PASS="geheim" mangoraft/mongodb-arm
+
+# Pollsystem Server
+docker run -itd -p 3000:3000 -e MONGODB=mongodb://admin:geheim@192.168.178.74:27017  tuttas/pollserver:arm
+
+# Pollsystem Client
+docker run -itd -p 81:80 tuttas/pollclient:arm
+```
+
 ## Server selbst einrichten
 ### Vorbereitungen
 Zunächst müssen die notwendigen Komponenten installiert werden.
