@@ -18,6 +18,8 @@ services:
       - mongodb
     environment: 
       - MONGODB=mongodb://mongodb:27017
+      - MONGOUSER=
+      - MONGOPASSWORD=
       - SECRET=12345
     depends_on: 
       - mongodb
@@ -47,13 +49,13 @@ docker run -itd -p 3000:3000 tuttas/pollserver:latest
 docker run -itd -p 81:80 tuttas/pollclient:latest
 ```
 
-Default verbindet sich der pollserver mit einem MongoDB Server verbunden, der auf localhost läuft, soll sich mit einem anderen MongoDB Server verbunden werden, so die dazu die Environment Variable *MONGODB*. Diese Variable erwartet einen Connection-String zur Mongo DB Datenbank!
+Default verbindet sich der pollserver mit einem MongoDB Server verbunden, der auf localhost läuft, soll sich mit einem anderen MongoDB Server verbunden werden, so die dazu die Environment Variable *MONGODB* angapasst werden. Diese Variable erwartet einen Connection-String zur Mongo DB Datenbank! Die Credentials für den Zugriff auf die Datenbank wird mit den Variablen *MONGOUSER* und *MONGOPASSWORD* fetgelegt.
 
 Ferner kann über die Environment Variable *SECRET* (default ist 1234) das geheime Wort aufgetauscht werden, mittels der sich Server und Client gegenseitig authentifizieren.
 
 Der Client verbindet sich default immer mit dem Server auf dem er ausgeführt wird und nutzt dabei das Secret "1234". Sollen diese Werte geändert werden, so kann dazu die Environment Variable *HOST* (achtung, den Host stets mit einfachen Hochkomma angeben),*PORT* (die Portnummer des Servers) und *SECRET* (für die gegenseitige Authentifizierung von Server<->Client) genutzt werden.
 ```
-docker run -itd -p 3000:3000 -e MONGODB=mongodb://admin:geheim@192.168.178.74:27017 -e SECRET=12345 tuttas/pollserver:latest
+docker run -itd -p 3000:3000 -e MONGODB=mongodb://192.168.178.74:27017 -e MONGOUSER=einuser -e MONGOPASSWORD=ganz-geheim -e SECRET=12345 tuttas/pollserver:latest
 docker run -itd -p 81:80 -e HOST='localhost' -e PORT=:3000/ -e SECRET=12345 tuttas/pollclient:latest
 ```
 

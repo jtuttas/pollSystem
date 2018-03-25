@@ -11,8 +11,15 @@ var dbState="not connected"
 
 console.log('config ist ' + JSON.stringify(config));
 console.log('Connect to '+config.mongodb);
+console.log('DB user ist:'+config.mongouser);
+console.log('DB Password ist:'+config.mongopassword)
 // Connect to the db
-MongoClient.connect(config.mongodb, function (err, db) {
+
+MongoClient.connect(config.mongodb, {
+ auth:{
+   user: config.mongouser, 
+   password: config.mongopassword}
+}, function (err, db) {
   if (!err) {
     console.log("We are connected to " + config.mongodb);
     dbState="connected to MONGODB Server!";
