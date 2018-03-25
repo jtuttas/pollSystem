@@ -323,6 +323,9 @@ router.get('/courses/:polltype/:poll', function (req, res, next) {
           return;
         }
       }
+
+      // ACHTUNG Azure  Cosmos DB hat kein distinct (stand März 2018, daher das ganze selbst implementiert)
+      /*
       dbo.collection("R" + req.params.polltype).distinct("course", { poll: req.params.poll }, function (err, result) {
         if (err) {
           console.log("Recieve Error:" + err);
@@ -330,6 +333,23 @@ router.get('/courses/:polltype/:poll', function (req, res, next) {
         else {
           console.log("Get Courses returns " + JSON.stringify(result));
           res.send(JSON.stringify(result));
+        }
+      })
+      */
+
+      dbo.collection("R" + req.params.polltype).find({ poll: req.params.poll }).toArray(function (err, result) {
+        if (err) {
+          console.log("Recieve Error:" + err);
+        }
+        else {
+          var foundCourses=[]
+          console.log("Get Courses returns " + JSON.stringify(result));
+          result.forEach(element => {
+            if (!foundCourses.includes(element.course)) {
+              foundCourses.push(element.course);
+            }
+          });
+          res.send(JSON.stringify(foundCourses));
         }
       })
     }

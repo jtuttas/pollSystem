@@ -2,10 +2,16 @@
     "rest-client.environmentVariables": {
         "local": {
             "host": "127.0.0.1",
+            "port":"3000"
         },
         "pi2b": {
             "host": "192.168.178.74",
+            "port": "3000",
         },
+        "azure": {
+            "host": "tuttaspollserver.azurewebsites.net",
+            "port":"80"
+        }
     },
     "files.exclude": {
         "**/.git": true,         // this is a default value

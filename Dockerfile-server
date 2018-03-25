@@ -1,4 +1,4 @@
-FROM node:6-wheezy
+FROM node:8.9-alpine
 ENV SECRET 1234
 ENV MONGODB mongodb://127.0.0.1:27017/
 ENV MONGOUSER tuttas

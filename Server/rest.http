@@ -1,6 +1,6 @@
 
 ### Neuen Umfrageteilnehmer eintragen quest/{polltype} (Felder _id,course und poll sind Pflichtfelder). 
-POST http://{{host}}:3000/quest/bho HTTP/1.1
+POST http://{{host}}:{{port}}/quest/bho HTTP/1.1
 Content-Type: application/json 
 secret: 1234
 
@@ -12,11 +12,11 @@ secret: 1234
 }
 
 ### bisherige Antworten des Teilnehmes abfragen quest/{polltype}/{key}
-GET http://{{host}}:3000/quest/bho/abcde HTTP/1.1
+GET http://{{host}}:{{port}}/quest/bho/abcde HTTP/1.1
 secret: 1234
 
 ### Antwort eines Teilnehmes eintragen quest/{polltype}
-PUT http://{{host}}:3000/quest/bho HTTP/1.1
+PUT http://{{host}}:{{port}}/quest/bho HTTP/1.1
 Content-Type: application/json
 secret: 1234
 
@@ -28,24 +28,24 @@ secret: 1234
 
 
 ### Abfragen aller Umfragen /polls/{polltype}
-GET http://{{host}}:3000/polls/bho HTTP/1.1
+GET http://{{host}}:{{port}}/polls/bho HTTP/1.1
 Content-Type: application/json
 secret: 1234
 
 ### Abfragen aller Antwortskalen /answers/{polltype}
-GET http://{{host}}:3000/answers/bho HTTP/1.1
+GET http://{{host}}:{{port}}/answers/bho HTTP/1.1
 Content-Type: application/json
 secret: 1234
 
 ### Abfragen aller Fragen /questions/{polltype}
-GET http://{{host}}:3000/questions/bho HTTP/1.1
+GET http://{{host}}:{{port}}/questions/bho HTTP/1.1
 Content-Type: application/json
 secret: 1234
 
 
 ### Authentifizieren beim Server f. Umfragen die mit Kennwort geschützt sind!
 # /polls/{polltype}/{poll}
-POST http://{{host}}:3000/polls/bho/Umfrage1 HTTP/1.1
+POST http://{{host}}:{{port}}/polls/bho/Umfrage1 HTTP/1.1
 Content-Type: application/json
 secret: 1234
 
@@ -56,13 +56,13 @@ secret: 1234
 ### Abfragen der Klassen einer Umfrage im Format /course/{polltype}/{poll}
 # Bei Umfragen die mit einem Kennwort geschützt sind muss das Secret
 # das Secret sein, welches durch eine Authentifizierung erzeugt wurde
-GET http://{{host}}:3000/courses/bho/Umfrage1 HTTP/1.1
+GET http://{{host}}:{{port}}/courses/bho/DemoUmfrage HTTP/1.1
 Content-Type: application/json
-secret: a47e1c0f-4d68-4ddf-b95e-45995419e7ca
+secret: 1234
 
 ### Auswertung abfragen im Format {polltype}/{poll}/{course}. Wobei poll und course als RegEx ausgewretet werden
 # Bei Umfragen die mit einem Kennwort geschützt sind muss das Secret
 # das Secret sein, welches durch eine Authentifizierung erzeugt wurde
-GET http://{{host}}:3000/evaluate/bho/Umfrage1/FIAE17J HTTP/1.1
+GET http://{{host}}:{{port}}/evaluate/bho/Umfrage1/FIAE17J HTTP/1.1
 Content-Type: application/json
 secret: a47e1c0f-4d68-4ddf-b95e-4599419e7ca
