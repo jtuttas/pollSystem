@@ -74,6 +74,8 @@ services:
   mongodb:
     image: mangoraft/mongodb-arm
     container_name: "mongodb"
+    environment: 
+      - MONGODB_PASS=geheim
     ports:
       - 27017:27017
   pollserver:
@@ -84,6 +86,9 @@ services:
       - mongodb
     environment: 
       - MONGODB=mongodb://mongodb:27017
+      - MONGOUSER=admin
+      - MONGOPASSWORD=geheim
+      - SECRET=12345
     depends_on: 
       - mongodb
   pollclient:      
@@ -91,7 +96,7 @@ services:
     environment: 
       - SECRET=12345
     ports:
-      - 81:80   
+      - 81:80 
 ```
 
 Über diese Anweisung erledigt das dieser Zweizeile:

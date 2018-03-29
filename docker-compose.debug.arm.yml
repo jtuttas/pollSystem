@@ -15,7 +15,9 @@ services:
     links: 
       - mongodb
     environment: 
-      - MONGODB=mongodb://admin:geheim@mongodb:27017
+      - MONGODB=mongodb://mongodb:27017
+      - MONGOUSER=admin
+      - MONGOPASSWORD=geheim
       - SECRET=12345
     depends_on: 
       - mongodb
