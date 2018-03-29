@@ -7,34 +7,60 @@ var config = require('../../config')
 var uuid = require('uuid');
 
 var ids = new Array();
-var dbState="not connected"
+var dbState = "not connected"
 
 console.log('config ist ' + JSON.stringify(config));
-console.log('Connect to '+config.mongodb);
-console.log('DB user ist:'+config.mongouser);
-console.log('DB Password ist:'+config.mongopassword)
+console.log('Connect to ' + config.mongodb);
+console.log('DB user ist:' + config.mongouser);
+console.log('DB Password ist:' + config.mongopassword)
 // Connect to the db
 
-MongoClient.connect(config.mongodb, {
- auth:{
-   user: config.mongouser, 
-   password: config.mongopassword}
-}, function (err, db) {
-  if (!err) {
-    console.log("We are connected to " + config.mongodb);
-    dbState="connected to MONGODB Server!";
-    dbo = db.db(dbname);
+var connect = function() {
+  if (config.mongouser.length == 0 && config.mongopassword.length == 0) {
+    MongoClient.connect(config.mongodb, function (err, db) {
+      if (!err) {
+        console.log("We are connected to " + config.mongodb);
+        dbState = "connected to MONGODB Server!";
+        dbo = db.db(dbname);
+      }
+      else {
+        console.log('got Error:' + err);
+        dbState = err
+        console.log('reconnect in 2 Sek');
+        setTimeout(connect, 4000);
+
+      }
+    });
+  
   }
   else {
-    console.log('got Error:'+err);
-    dbState=err
-  }
-});
+    MongoClient.connect(config.mongodb, {
+      auth: {
+        user: config.mongouser,
+        password: config.mongopassword
+      }
+    }, function (err, db) {
+      if (!err) {
+        console.log("We are connected to " + config.mongodb);
+        dbState = "connected to MONGODB Server!";
+        dbo = db.db(dbname);
+      }
+      else {
+        console.log('got Error:' + err);
+        dbState = err
+        console.log('reconnect in 2 Sek');
+        setTimeout(connect, 2000);
+      }
+    });
+  
+  }  
+}
 
+connect();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Umfrageserver ' + config.Version + ' is running..!! DBState='+dbState });
+  res.render('index', { title: 'Umfrageserver ' + config.Version + ' is running..!! DBState=' + dbState });
 });
 
 /**
@@ -342,7 +368,7 @@ router.get('/courses/:polltype/:poll', function (req, res, next) {
           console.log("Recieve Error:" + err);
         }
         else {
-          var foundCourses=[]
+          var foundCourses = []
           console.log("Get Courses returns " + JSON.stringify(result));
           result.forEach(element => {
             if (!foundCourses.includes(element.course)) {

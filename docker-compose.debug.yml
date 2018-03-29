@@ -6,6 +6,16 @@ services:
     container_name: "mongodb"
     ports:
       - 27017:27017
+    environment: 
+      - MONGO_INITDB_ROOT_USERNAME=tuttas
+      - MONGO_INITDB_ROOT_PASSWORD=geheim
+      - MONGO_INITDB_DATABASE=umfrage    
+  pollclient:      
+    image: tuttas/pollclient:latest
+    environment: 
+      - SECRET=12345
+    ports:
+      - 81:80
   pollserver:
     image: tuttas/pollserver:latest
     ports:
@@ -14,13 +24,9 @@ services:
       - mongodb
     environment: 
       - MONGODB=mongodb://mongodb:27017
+      - MONGOUSER=tuttas
+      - MONGOPASSWORD=geheim
       - SECRET=12345
     depends_on: 
       - mongodb
-  pollclient:      
-    image: tuttas/pollclient:latest
-    environment: 
-      - SECRET=12345
-    ports:
-      - 81:80
       
