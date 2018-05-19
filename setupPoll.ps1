@@ -1,4 +1,4 @@
-$mongo="mongodb://tut:12345678@localhost:27017"
+$mongo="mongodb://tuttas:geheim@localhost:27017"
 #$mongo="mongodb://admin:geheim@192.168.178.74:27017"
 
 . $PSScriptRoot/pollsystem.ps1
